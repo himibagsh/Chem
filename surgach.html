@@ -414,6 +414,14 @@ var ELS = ['','H','He','Li','Be','B','C','N','O','F','Ne','Na','Mg','Al','Si','P
 function cssv(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim() || '#888'; }
 function ri(a,b){ return a + Math.floor(Math.random()*(b-a+1)); }
 function shuffle(a){ for (var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+/* Виджет дэлгэцэнд харагдаж байгаа эсэхийг хянана — харагдахгүй үед
+   анимацаа зогсоовол утасны ачаалал эрс буурна. */
+function onVisible(el, cb){
+  if (typeof IntersectionObserver === 'undefined'){ cb(true); return; }
+  new IntersectionObserver(function(es){ cb(es[0].isIntersecting); },
+                           {threshold:0.01}).observe(el);
+}
+
 function nota(A,Z,N,sym){
   return '<span class="nota"><span class="stack"><span class="A">'+A+'</span><span class="Z">'+Z+
          '</span></span>'+sym+'<span class="post N">'+N+'</span></span>';
@@ -459,9 +467,14 @@ function wScatter(root){
 
   var cv = root.querySelector('canvas'), ctx = cv.getContext('2d');
   var mode = 'thomson', running = true, parts = [], tally = {a:0,b:0,c:0};
-  var W=0,H=0,R=0,CX=0,CY=0,K=0,V0=0, speed = 1;
+  var W=0,H=0,R=0,CX=0,CY=0,K=0,V0=0, speed = 1, live = true, COL = {};
 
+  function readColors(){
+    COL = {paper:cssv('--surface'), rule:cssv('--rule'), gold:cssv('--gold'),
+           gbg:cssv('--gold-bg'), proton:cssv('--proton'), ink3:cssv('--ink-3')};
+  }
   function resize(){
+    readColors();
     var rect = cv.getBoundingClientRect();
     var dpr = Math.min(window.devicePixelRatio || 1, 2);
     W = Math.max(280, rect.width); H = Math.max(160, rect.height);
@@ -498,8 +511,8 @@ function wScatter(root){
     }
   }
   function draw(){
-    var paper=cssv('--surface'), rule=cssv('--rule'), gold=cssv('--gold'),
-        gbg=cssv('--gold-bg'), proton=cssv('--proton'), ink3=cssv('--ink-3');
+    var paper=COL.paper, rule=COL.rule, gold=COL.gold,
+        gbg=COL.gbg, proton=COL.proton, ink3=COL.ink3;
     ctx.clearRect(0,0,W,H); ctx.fillStyle = paper; ctx.fillRect(0,0,W,H);
     ctx.fillStyle = gbg; ctx.fillRect(CX-R*0.16, 0, R*0.32, H);
     ctx.strokeStyle = gold; ctx.lineWidth = 1.2; ctx.globalAlpha = .45;
@@ -543,10 +556,12 @@ function wScatter(root){
   }
   var last = 0, acc = 0;
   function loop(t){
+    requestAnimationFrame(loop);
+    if (!live){ last = t; return; }        /* дэлгэцэнд байхгүй бол зурахгүй */
     if (!last) last = t;
     var dt = Math.min((t-last)/1000, 1/30) * speed; last = t;
     if (running){ acc += dt; if (acc > 0.16 && parts.length < 80){ acc = 0; spawn(); } }
-    step(dt); draw(); requestAnimationFrame(loop);
+    step(dt); draw();
   }
   function clear(){ parts = []; tally = {a:0,b:0,c:0}; upd(); }
   Array.prototype.forEach.call(root.querySelectorAll('.seg button'), function(b){
@@ -571,6 +586,7 @@ function wScatter(root){
   root.querySelector('[data-a="clear"]').addEventListener('click', clear);
   root.querySelector('input[type=range]').addEventListener('input', function(e){ speed = e.target.value/100; });
   window.addEventListener('resize', resize);
+  onVisible(cv, function(v){ live = v; });
   resize(); upd(); requestAnimationFrame(loop);
 }
 
@@ -705,9 +721,15 @@ function wZoom(root){
    '<p class="w-hint" data-t="msg"></p>';
 
   var cv = root.querySelector('canvas'), ctx = cv.getContext('2d');
-  var W=0,H=0, zoom = 1;
+  var W=0, H=0, zoom=1, COL={}, pending=false;
   var ATOM_M = 1e-10, NUC_M = 1e-14;      /* диаметр, метр */
+
+  function readColors(){
+    COL = {surface:cssv('--surface'), rule:cssv('--rule'), proton:cssv('--proton'),
+           electron:cssv('--electron'), ink3:cssv('--ink-3'), gold:cssv('--gold')};
+  }
   function resize(){
+    readColors();
     var r = cv.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio||1, 2);
     W = Math.max(240, r.width); H = Math.max(200, r.height);
     cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
@@ -719,43 +741,63 @@ function wZoom(root){
     return (m*1e15).toFixed(m*1e15 < 10 ? 2 : 1) + ' фм';
   }
   function draw(){
-    var surface=cssv('--surface'), rule=cssv('--rule'), proton=cssv('--proton'),
-        electron=cssv('--electron'), ink3=cssv('--ink-3'), gold=cssv('--gold');
-    ctx.clearRect(0,0,W,H); ctx.fillStyle = surface; ctx.fillRect(0,0,W,H);
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle = COL.surface; ctx.fillRect(0,0,W,H);
     var cx = W/2, cy = H/2;
     var viewM = (ATOM_M*1.5) / zoom;           /* дэлгэцийн бодит өргөн */
     var pxm = W / viewM;
     var aR = ATOM_M/2 * pxm, nR = NUC_M/2 * pxm;
 
-    ctx.setLineDash([4,6]); ctx.strokeStyle = rule; ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.arc(cx, cy, aR, 0, Math.PI*2); ctx.stroke(); ctx.setLineDash([]);
-    if (aR < Math.max(W,H)){
-      ctx.fillStyle = electron;
+    /* Дэлгэцийн таллын урт. Атомын хүрээ үүнээс хэд дахин том болмогц
+       дэлгэцнээс бүрэн гарсан байна — зурах шаардлагагүй.
+       Хамгаалалтгүй бол өндөр томруулалтад радиус нь сая пиксел болж,
+       тасархай зураас нь зуун мянган хэрчим болоод браузер гацдаг. */
+    var bound = Math.sqrt(W*W + H*H);
+    if (aR <= bound * 2.5){
+      ctx.setLineDash([4,6]); ctx.strokeStyle = COL.rule; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(cx, cy, aR, 0, Math.PI*2); ctx.stroke(); ctx.setLineDash([]);
+    }
+    if (aR <= bound){
+      ctx.fillStyle = COL.electron;
       for (var i=0;i<6;i++){
         var a = i/6*Math.PI*2 + 0.4;
-        ctx.beginPath(); ctx.arc(cx+aR*Math.cos(a), cy+aR*Math.sin(a), Math.max(2.5, 5/Math.sqrt(zoom)), 0, Math.PI*2); ctx.fill();
+        ctx.beginPath();
+        ctx.arc(cx+aR*Math.cos(a), cy+aR*Math.sin(a), Math.max(2.5, 5/Math.sqrt(zoom)), 0, Math.PI*2);
+        ctx.fill();
       }
     }
     if (nR > 0.35){
-      ctx.fillStyle = proton; ctx.globalAlpha = .18;
-      ctx.beginPath(); ctx.arc(cx,cy,Math.max(nR*2.4, 7),0,Math.PI*2); ctx.fill(); ctx.globalAlpha = 1;
-      ctx.beginPath(); ctx.arc(cx,cy,nR,0,Math.PI*2); ctx.fill();
+      /* Бүдэг халос нь зөвхөн цөм жижиг байхад «энд байна» гэж заах үүрэгтэй.
+         Цөм аль хэдийн том болсон үед халос нь түүнийг бодитоос том харагдуулна. */
+      ctx.fillStyle = COL.proton;
+      if (nR < 30){
+        ctx.globalAlpha = .18;
+        ctx.beginPath(); ctx.arc(cx,cy,Math.max(nR*2.4, 7),0,Math.PI*2); ctx.fill();
+        ctx.globalAlpha = 1;
+      }
+      ctx.beginPath(); ctx.arc(cx,cy,Math.min(nR, bound),0,Math.PI*2); ctx.fill();
     } else {
-      ctx.strokeStyle = proton; ctx.lineWidth = 1.4;
+      ctx.strokeStyle = COL.proton; ctx.lineWidth = 1.4;
       ctx.beginPath(); ctx.moveTo(cx-7,cy); ctx.lineTo(cx+7,cy);
       ctx.moveTo(cx,cy-7); ctx.lineTo(cx,cy+7); ctx.stroke();
-      ctx.font = '600 11px "PT Mono", monospace'; ctx.textAlign='center'; ctx.fillStyle = proton;
+      ctx.font = '600 11px "PT Mono", monospace'; ctx.textAlign='center'; ctx.fillStyle = COL.proton;
       ctx.fillText('цөм энд байгаа ч харагдахгүй', cx, cy+24);
     }
     /* масштабын шугам */
     var barPx = W*0.3, barM = barPx / pxm;
-    ctx.strokeStyle = ink3; ctx.lineWidth = 2;
+    ctx.strokeStyle = COL.ink3; ctx.lineWidth = 2;
     ctx.beginPath(); ctx.moveTo(14, H-20); ctx.lineTo(14+barPx, H-20);
     ctx.moveTo(14,H-25); ctx.lineTo(14,H-15); ctx.moveTo(14+barPx,H-25); ctx.lineTo(14+barPx,H-15); ctx.stroke();
-    ctx.font = '600 11px "PT Mono", monospace'; ctx.textAlign = 'left'; ctx.fillStyle = ink3;
+    ctx.font = '600 11px "PT Mono", monospace'; ctx.textAlign = 'left'; ctx.fillStyle = COL.ink3;
     ctx.fillText(fmt(barM), 14, H-27);
-    ctx.textAlign = 'right'; ctx.fillStyle = gold;
+    ctx.textAlign = 'right'; ctx.fillStyle = COL.gold;
     ctx.fillText(Math.round(zoom) + '× томруулсан', W-12, 20);
+  }
+  /* Гулсуур хөдлөх болгонд биш, кадр тутамд нэг л удаа зурна. */
+  function requestDraw(){
+    if (pending) return;
+    pending = true;
+    requestAnimationFrame(function(){ pending = false; draw(); });
   }
   var msg = root.querySelector('[data-t="msg"]'), zl = root.querySelector('[data-t="z"]');
   function tell(){
@@ -770,7 +812,7 @@ function wZoom(root){
   }
   root.querySelector('input[type=range]').addEventListener('input', function(e){
     zoom = Math.pow(10, e.target.value/100);      /* 1 → 10 000 */
-    draw(); tell();
+    requestDraw(); tell();
   });
   window.addEventListener('resize', resize);
   resize(); tell();

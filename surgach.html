@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Багшийн үзүүлэн: Хими VIII, 2.1 Атомын бүтэц. 15 слайд, 6 интерактив симуляц.">
+<meta name="description" content="8-р ангийн химийн хичээл: атомын бүтэц. Резерфордын туршилт, атом угсрах, дасгал тоглоом — утсаараа туршиж үзээрэй.">
 <meta name="theme-color" content="#E6EDF6">
-<title>Атомын бүтэц — үзүүлэн</title>
+<title>Атом дотор юу байна вэ?</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=PT+Mono&family=PT+Sans:ital,wght@0,400;0,700;1,400&family=PT+Serif:wght@400;700&display=swap">
 <style>
@@ -156,345 +156,247 @@ table.data td.num{font-family:var(--f-mono); text-align:center; font-variant-num
 @media (prefers-reduced-motion:reduce){ *{animation:none!important; transition:none!important} }
 
 
-/* ══ багшийн үзүүлэн ═══════════════════════════ */
-body{font-size:16px; line-height:1.45}
-.wrap{max-width:1240px; margin:0 auto; padding-block:14px 0; padding-left:16px; padding-right:16px}
-.stage{position:relative; background:var(--paper); border:1.5px solid var(--rule); border-radius:12px;
-  box-shadow:var(--shadow-lg); overflow:hidden; aspect-ratio:16/9; display:grid}
-@media (max-width:900px){ .stage{aspect-ratio:auto; min-height:76vh} }
+/* ══ сурагчийн хуудас ══════════════════════════ */
+body{font-size:16.5px; line-height:1.55; padding-bottom:40px}
+.shell{max-width:800px; margin:0 auto; padding-left:16px; padding-right:16px}
 
-.slide{grid-area:1/1; display:flex; flex-direction:column; gap:clamp(9px,1.5vw,18px);
-  padding:clamp(18px,3vw,38px) clamp(16px,3.6vw,48px) clamp(50px,4.6vw,60px);
-  overflow-y:auto; overflow-x:hidden}
-.slide[hidden]{display:none!important}
-.eyebrow{display:flex; flex-wrap:wrap; align-items:baseline; gap:10px;
-  font-family:var(--f-mono); font-size:clamp(10px,1.05vw,12.5px); letter-spacing:.09em;
-  text-transform:uppercase; color:var(--ink-3)}
-.eyebrow .phase{color:var(--gold); font-weight:700}
-.eyebrow .min{margin-left:auto}
-h2.st{font-size:clamp(24px,3.7vw,46px); line-height:1.1}
-.lede{font-size:clamp(14.5px,1.65vw,21px); color:var(--ink-2); max-width:64ch}
-.lede.big{font-size:clamp(16px,2vw,25px); color:var(--ink)}
-.note{font-size:clamp(12px,1.25vw,15px); color:var(--ink-3)}
-.note b{color:var(--gold)}
-hr.rule{height:1.5px; background:var(--rule-soft); border:0; margin:0}
+.topbar{position:sticky; top:env(safe-area-inset-top, 0px); z-index:20; background:rgba(230,237,246,.93);
+  backdrop-filter:blur(10px); border-bottom:1.5px solid var(--rule); padding-block:8px}
+.topbar .in{max-width:800px; margin:0 auto; padding-left:16px; padding-right:16px;
+  display:flex; align-items:center; gap:10px}
+.topbar .brand{font-family:var(--f-mono); font-size:11.5px; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--gold); white-space:nowrap}
+.navchips{display:flex; gap:6px; overflow-x:auto; scrollbar-width:none; -webkit-overflow-scrolling:touch}
+.navchips::-webkit-scrollbar{display:none}
+.navchips a{flex:0 0 auto; font-size:13px; font-weight:700; text-decoration:none; color:var(--ink-2);
+  background:var(--paper); border:1.5px solid var(--rule); border-radius:999px; padding:5px 12px}
+.navchips a:hover{border-color:var(--gold); color:var(--gold)}
 
-.cols{display:grid; gap:clamp(12px,1.8vw,26px)}
-.c2{grid-template-columns:1fr 1fr}
-.c23{grid-template-columns:1fr 1.25fr}
-.c32{grid-template-columns:1.3fr 1fr}
-@media (max-width:900px){ .c2,.c23,.c32{grid-template-columns:1fr} }
-.card{background:var(--surface); border:1.5px solid var(--rule); border-radius:var(--r);
-  padding:clamp(12px,1.6vw,20px); display:flex; flex-direction:column; gap:9px}
-.card h3{font-family:var(--f-body); font-weight:700; font-size:clamp(14px,1.5vw,19px); color:var(--gold)}
-ul.plain{margin:0; padding-left:1.1em; font-size:clamp(14px,1.6vw,20px); color:var(--ink-2)}
-ul.plain li{margin-bottom:5px} ul.plain li::marker{color:var(--gold)}
-.quote{border-left:5px solid var(--gold); padding-left:16px; font-family:var(--f-display);
-  font-size:clamp(15px,1.9vw,26px); font-weight:700; line-height:1.25}
+.hero{padding-block:clamp(28px,7vw,56px) clamp(20px,5vw,36px)}
+.hero .kick{font-family:var(--f-mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--gold); margin-bottom:10px}
+.hero h1{font-size:clamp(34px,10vw,62px); line-height:1.03}
+.hero .sub{font-size:clamp(17px,3.2vw,22px); color:var(--ink-2); margin-top:12px; max-width:34ch}
+.hero .meta{display:flex; flex-wrap:wrap; gap:8px; margin-top:18px}
+.hero .meta span{font-size:13px; font-weight:700; background:var(--paper); border:1.5px solid var(--rule);
+  border-radius:999px; padding:5px 12px; color:var(--ink-2)}
 
-.goal{display:flex; gap:14px; align-items:flex-start; padding:clamp(9px,1.3vw,15px) 0;
-  border-bottom:1.5px solid var(--rule-soft)}
-.goal:last-child{border-bottom:0}
-.goal .n{flex:0 0 auto; width:36px; height:36px; border-radius:50%; background:var(--gold-bg);
-  color:var(--gold); font-family:var(--f-mono); font-size:16px; font-weight:700; display:grid; place-items:center}
-.goal p{font-size:clamp(14.5px,1.7vw,22px)}
-.legend{display:flex; gap:16px; flex-wrap:wrap; font-size:clamp(12.5px,1.35vw,17px); color:var(--ink-2)}
-.legend b{font-family:var(--f-mono)}
-.linkrow{display:flex; flex-wrap:wrap; gap:9px}
-.linkrow a{font-weight:700; font-size:clamp(12.5px,1.3vw,16px); text-decoration:none; color:var(--electron);
-  background:var(--surface); border:1.5px solid var(--rule); border-radius:8px; padding:9px 13px}
-.gloss{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:7px}
-.glc{border:1.5px solid var(--rule); border-radius:8px; padding:7px 10px; background:var(--surface)}
-.glc .en{font-family:var(--f-mono); font-size:11px; color:var(--gold)}
-.glc .mn{font-weight:700; font-size:clamp(13px,1.35vw,16px)}
+section.blk{padding-block:clamp(20px,5vw,34px); border-top:1.5px solid var(--rule); scroll-margin-top:64px}
+section.blk:first-of-type{border-top:0}
+.eyebrow{font-family:var(--f-mono); font-size:11.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--gold); margin-bottom:7px}
+h2.bt{font-size:clamp(23px,5.4vw,34px); line-height:1.15; margin-bottom:10px}
+.lead{font-size:clamp(15.5px,2.3vw,18.5px); color:var(--ink-2); max-width:60ch}
+.lead+.lead{margin-top:9px}
+.stack{display:flex; flex-direction:column; gap:14px; margin-top:16px}
 
-/* ── title slide ── */
-.hero{justify-content:center; background:
-  radial-gradient(circle at 82% 26%, var(--gold-bg) 0%, transparent 52%), var(--paper)}
-.hero .kick{font-family:var(--f-mono); font-size:clamp(10.5px,1.15vw,14px); letter-spacing:.16em;
-  text-transform:uppercase; color:var(--gold)}
-.hero h1{font-size:clamp(32px,6.6vw,80px); line-height:1.01}
-.hero .meta{display:flex; flex-wrap:wrap; gap:9px 22px; font-size:clamp(12.5px,1.35vw,17px); color:var(--ink-2)}
-.hero .meta b{color:var(--ink)}
+.big-q{font-family:var(--f-display); font-size:clamp(20px,4.6vw,28px); font-weight:700; line-height:1.25;
+  border-left:5px solid var(--gold); padding-left:16px; color:var(--ink)}
+.callout{background:var(--gold-bg); border-radius:var(--r); padding:14px 16px;
+  font-size:clamp(14.5px,2vw,17px); color:var(--ink)}
+.callout b{color:var(--gold)}
+ul.bul{margin:10px 0 0; padding-left:1.15em; font-size:clamp(15px,2.2vw,17.5px); color:var(--ink-2)}
+ul.bul li{margin-bottom:6px}
+ul.bul li::marker{color:var(--gold)}
 
-/* ── nav ── */
-.bar{position:absolute; left:0; right:0; bottom:0; display:flex; align-items:center; gap:8px;
-  padding:8px clamp(12px,2.2vw,20px); background:var(--paper); border-top:1.5px solid var(--rule-soft)}
-.dots{display:flex; gap:3px; flex-wrap:wrap; flex:1; min-width:0}
-.dot{width:19px; height:19px; padding:0; border:0; border-radius:4px; cursor:pointer; background:var(--sunk);
-  font-family:var(--f-mono); font-size:9.5px; line-height:19px; color:var(--ink-3); text-align:center}
-.dot:hover{background:var(--ink-3); color:#fff}
-.dot[aria-current="true"]{background:var(--gold); color:#fff}
-.count{font-family:var(--f-mono); font-size:11.5px; color:var(--ink-3); font-variant-numeric:tabular-nums}
-.nb{border:1.5px solid var(--rule); background:var(--surface); border-radius:7px; padding:5px 13px;
-  cursor:pointer; font-size:14px; font-weight:700; color:var(--ink-2)}
-.nb:hover{border-color:var(--gold); color:var(--gold)}
-.nb[disabled]{opacity:.35; cursor:default; border-color:var(--rule); color:var(--ink-3)}
-.pagefoot{text-align:center; font-size:13px; color:var(--ink-3); padding-block:12px 20px}
-.pagefoot a{color:var(--gold); font-weight:700}
+.pairs{display:grid; gap:10px}
+.pair{background:var(--paper); border:1.5px solid var(--rule); border-radius:var(--r); overflow:hidden}
+.pair>button{width:100%; text-align:left; background:transparent; border:0; padding:13px 15px;
+  cursor:pointer; font-size:clamp(14.5px,2.1vw,17px); font-weight:700; display:flex; gap:10px; align-items:flex-start}
+.pair>button .no{font-family:var(--f-mono); color:var(--gold); flex:0 0 auto}
+.pair>button .tx{flex:1}
+.pair>button .pm{font-family:var(--f-mono); color:var(--gold); font-size:20px; line-height:1}
+.pair .ans{padding:0 15px 13px 40px; font-size:clamp(14px,2vw,16.5px); color:var(--ink-2)}
+.pair .ans b{color:var(--ink)}
 
-/* ── слайдын дотор виджетүүдийг нягтруулах ── */
-.slide .w{box-shadow:none; border:0; padding:0; gap:10px}
-.slide .w .w-head h3{font-size:clamp(14px,1.5vw,18px)}
-.slide .w .w-hint{font-size:clamp(12.5px,1.3vw,16px)}
-.slide .cvwrap.ratio-wide{aspect-ratio:2.5/1}
-.slide .cvwrap.ratio-sq{aspect-ratio:16/9}
-.slide .bld>svg{max-width:330px; max-height:270px}
-.slide .qtext{font-size:clamp(15px,1.9vw,23px)}
-.slide .token .ball{width:44px; height:44px; font-size:18px}
-@media (max-width:900px){ .slide .cvwrap.ratio-wide{aspect-ratio:16/9} }
+.notabox{display:flex; flex-wrap:wrap; gap:18px; align-items:center; background:var(--paper);
+  border:1.5px solid var(--rule); border-radius:var(--r); padding:18px}
+.notabox .nota{font-size:clamp(40px,11vw,68px)}
+.notakey{display:flex; flex-direction:column; gap:7px; font-size:clamp(14px,2vw,16.5px)}
+.notakey b{font-family:var(--f-mono)}
+
+.glossg{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:8px; margin-top:14px}
+.gl{background:var(--paper); border:1.5px solid var(--rule); border-radius:8px; padding:8px 11px}
+.gl .en{font-family:var(--f-mono); font-size:11.5px; color:var(--gold)}
+.gl .mn{font-weight:700; font-size:14.5px}
+.links{display:flex; flex-wrap:wrap; gap:9px; margin-top:16px}
+.links a{font-weight:700; font-size:14.5px; text-decoration:none; color:var(--electron); background:var(--paper);
+  border:1.5px solid var(--rule); border-radius:8px; padding:10px 14px}
+.links a:hover{border-color:var(--electron)}
+footer{margin-top:34px; padding-top:18px; border-top:1.5px solid var(--rule);
+  font-size:13.5px; color:var(--ink-3); text-align:center}
+.totop{display:inline-block; margin-top:12px; font-weight:700; color:var(--gold); text-decoration:none}
 </style>
 </head>
 <body>
 
-<div class="wrap">
-<div class="stage" id="stage">
+<div class="topbar"><div class="in">
+  <span class="brand">Хими VIII</span>
+  <nav class="navchips" aria-label="Хэсгүүд">
+    <a href="#asuudal">Асуудал</a>
+    <a href="#turshilt">Туршилт</a>
+    <a href="#hesguud">Эгэл хэсэг</a>
+    <a href="#hooson">Хоосон зай</a>
+    <a href="#temdeglegee">A, Z, N</a>
+    <a href="#dasgal">Дасгал</a>
+  </nav>
+</div></div>
 
-<section class="slide hero" data-t="Гарчиг">
-  <div class="kick">Хими VIII · II бүлэг · 2.1 Атомын бүтэц</div>
-  <h1>Атом дотор<br>юу байна вэ?</h1>
-  <p class="lede big">Атомыг бүрдүүлэгч эгэл хэсэг ба атомын бүтцийн загвар</p>
-  <hr class="rule">
-  <div class="meta"><span><b>40 минут</b> · 8-р анги</span><span>Сурах бичиг <b>х. 38–45</b></span><span>Багш: <b>Эрдэнэбат С.</b></span></div>
-  <p class="note">Сумны товч <b>←</b> <b>→</b>, эсвэл доорх дугаарууд дээр дарж слайд солино. <b>F</b> — бүтэн дэлгэц.</p>
-</section>
+<div class="shell">
 
-<section class="slide" data-t="Зорилт">
-  <div class="eyebrow"><span class="phase">Сэргээн санах</span><span class="min">0–4 мин</span></div>
-  <h2 class="st">Хичээл дуусахад та…</h2>
-  <div>
-    <div class="goal"><span class="n">1</span><p><b>протон, нейтрон, электрон</b>-ы байрлал, харьцангуй цэнэг, харьцангуй массыг нэрлэж чадна.</p></div>
-    <div class="goal"><span class="n">2</span><p><b>Резерфордын туршилт</b>-аас атомын цөмийн тухай ямар дүгнэлт гарсныг тайлбарлаж чадна.</p></div>
-    <div class="goal"><span class="n">3</span><p>массын тоо <b>A</b> ба протоны тоо <b>Z</b>-ээс протон, нейтрон, электроны тоог <b>олж чадна</b>.</p></div>
+<header class="hero">
+  <div class="kick">8-р анги · 2.1 Атомын бүтэц</div>
+  <h1>Атом дотор юу байна вэ?</h1>
+  <p class="sub">Эрдэмтэд нүдэнд үл харагдах атомын дотоод бүтцийг хэрхэн олж мэдсэн бэ? Доорх туршилтуудыг өөрөө ажиллуулж үзээрэй.</p>
+  <div class="meta"><span>6 интерактив туршилт</span><span>Утсанд тохирсон</span><span>Дасгал + оноо</span></div>
+</header>
+
+<!-- 1 ─ Асуудал ───────────────────────────── -->
+<section class="blk" id="asuudal">
+  <div class="eyebrow">1 · Асуудал</div>
+  <h2 class="bt">Хайрцгийг нээлгүйгээр дотор нь юу байгааг яаж мэдэх вэ?</h2>
+  <p class="lead">Гарт чинь битүү хайрцаг байна гэж бодоорой. Нээж болохгүй, дотрыг нь харах ч боломжгүй.</p>
+  <ul class="bul">
+    <li><b>Сэгсэрч</b> сонсвол — юу мэдэх вэ?</li>
+    <li><b>Жинлэвэл</b> — юу мэдэх вэ?</li>
+    <li><b>Хазайлгавал</b> — юу мэдэх вэ?</li>
+  </ul>
+  <div class="stack">
+    <p class="big-q">Эрдэмтэд атомыг яг ингэж судалсан: нээлгүйгээр, зөвхөн гаднаас нь юм «шидээд».</p>
+    <div class="callout"><b>1904 он.</b> Ж.Ж.Томсон атом бол эерэг цэнэгтэй цул бөмбөлөг, дотор нь үзэм шиг
+      электронууд тараагдсан гэж үзэж байв. Үүнийг «үзэмтэй талхан загвар» гэдэг. Гэвч энэ загвар үнэн эсэхийг
+      хэн ч шалгаж байгаагүй.</div>
   </div>
-  <hr class="rule">
-  <p class="note">Ажлын хуудсаа гаргаж нэрээ бичээрэй. Өнөөдөр 4 даалгавар, төгсгөлд нь 5 минутын гарах тасалбар байна.</p>
 </section>
 
-<section class="slide" data-t="Томсоны загвар">
-  <div class="eyebrow"><span class="phase">Сэргээн санах</span><span class="min">0–4 мин</span></div>
-  <h2 class="st">1904 он: атом бол «үзэмтэй талх»</h2>
-  <div class="cols c23">
-    <div style="display:flex;flex-direction:column;gap:10px">
-      <p class="lede">7-р ангид бид ингэж үзсэн: <b>«Атом бол химийн урвалаар цаашид задрахгүй хамгийн жижиг хэсэг»</b>.</p>
-      <p class="lede">Гэвч 1896 онд <b>Ж.Ж.Томсон</b> атомаас сөрөг цэнэгтэй урсгал ялгарахыг нээв — атом дотроо ямар нэг зүйлтэй байжээ. Тэр хэсгийг <b>электрон</b> гэж нэрлэсэн.</p>
-      <p class="quote">Атом = эерэг цэнэгтэй цул гурил, дотор нь үзэм шиг тараагдсан электронууд.</p>
+<!-- 2 ─ Туршилт ───────────────────────────── -->
+<section class="blk" id="turshilt">
+  <div class="eyebrow">2 · 1911 он</div>
+  <h2 class="bt">Резерфордын алтан ялтасны туршилт</h2>
+  <p class="lead">Э.Резерфорд алтны маш нимгэн ялтас руу эерэг цэнэгтэй альфа туяа буудаж үзсэн.
+    Хэрэв Томсоны загвар зөв бол бүх туяа бараг шулуун нэвтрэх ёстой. Доорх симуляц дээр хоёуланг нь турш.</p>
+  <div class="stack"><div data-w="scatter"></div></div>
+</section>
+
+<!-- 3 ─ Дүгнэлт ───────────────────────────── -->
+<section class="blk" id="dugnelt">
+  <div class="eyebrow">3 · Ажиглалт → дүгнэлт</div>
+  <h2 class="bt">Ажиглалт бүр нэг дүгнэлт төрүүлнэ</h2>
+  <p class="lead">Дараах ажиглалт бүрээс ямар дүгнэлт гарахыг эхлээд өөрөө бодоод, дараа нь дарж шалгаарай.</p>
+  <div class="pairs stack">
+    <div class="pair"><button type="button"><span class="no">1</span><span class="tx">Альфа туяаны ИХЭНХ хэсэг ялтсыг шулуун нэвтэрсэн</span><span class="pm">+</span></button>
+      <div class="ans" hidden>Атом голдуу <b>хоосон зайнаас</b> тогтдог. Хэрэв атом цул байсан бол туяа нэвтэрч чадахгүй байв.</div></div>
+    <div class="pair"><button type="button"><span class="no">2</span><span class="tx">Цөөн хэсэг нь чиглэлээ өөрчилж сарнисан</span><span class="pm">+</span></button>
+      <div class="ans" hidden>Атомын дотор <b>ижил цэнэгтэй</b> (эерэг) зүйл байгаа тул түлхэлцэж байна. Ижил цэнэгүүд бие биеэ түлхдэг.</div></div>
+    <div class="pair"><button type="button"><span class="no">3</span><span class="tx">Маш цөөн хэсэг нь бараг буцаж ойсон</span><span class="pm">+</span></button>
+      <div class="ans" hidden>Атомын төвд маш <b>бага эзлэхүүнтэй, нягт, эерэг цэнэгтэй</b> хэсэг байна. Үүнийг <b>ЦӨМ</b> гэж нэрлэсэн.</div></div>
+  </div>
+  <div class="stack">
+    <div class="callout">Резерфорд өөрөө ингэж хэлсэн: энэ нь цаасан алчуур руу том сум буудахад сум эргэж
+      ирээд чамайг цохисонтой адил гайхалтай явдал байлаа.</div>
+    <p class="lead"><b>Гарагин загвар.</b> 1911 онд Резерфорд дүгнэв: атомын төвд эерэг цэнэгтэй <b>цөм</b>,
+      түүнийг тойрон сөрөг цэнэгтэй <b>электрон</b> оршино. Нарны аймагтай төстэй тул «гарагин загвар» гэж нэрлэсэн.
+      1932 онд Ж.Чедвик цөмөөс цэнэггүй, протонтой ижил масстай <b>нейтрон</b>-ыг олсон.</p>
+  </div>
+</section>
+
+<!-- 4 ─ Эгэл хэсэг ────────────────────────── -->
+<section class="blk" id="hesguud">
+  <div class="eyebrow">4 · Гурван эгэл хэсэг</div>
+  <h2 class="bt">Протон, нейтрон, электрон</h2>
+  <div class="stack">
+    <div class="tscroll" style="border:1.5px solid var(--rule);border-radius:var(--r);overflow:hidden">
+      <table class="data">
+        <thead><tr><th>Жижиг хэсэг</th><th>Байрлал</th><th>Харьцангуй цэнэг</th><th>Харьцангуй масс</th></tr></thead>
+        <tbody>
+          <tr><td><span class="chip c-p"><span class="mk">+</span>протон</span></td><td>цөмд</td><td class="num">+1</td><td class="num">1</td></tr>
+          <tr><td><span class="chip c-n"><span class="mk">0</span>нейтрон</span></td><td>цөмд</td><td class="num">0</td><td class="num">1</td></tr>
+          <tr><td><span class="chip c-e"><span class="mk">−</span>электрон</span></td><td>тойрог замд</td><td class="num">−1</td><td class="num">1/1840 ≈ 0</td></tr>
+        </tbody>
+      </table>
     </div>
-    <div class="card">
-      <svg viewBox="0 0 240 205" style="width:100%;height:auto;display:block" aria-label="Томсоны үзэмтэй талхан загвар">
-        <circle cx="120" cy="102" r="82" fill="var(--proton-bg)" stroke="var(--proton)" stroke-width="2"/>
-        <text x="120" y="20" text-anchor="middle" font-family="PT Mono, monospace" font-size="11" fill="var(--proton)">эерэг цэнэг жигд тархсан</text>
-        <g fill="var(--electron)"><circle cx="92" cy="74" r="8"/><circle cx="148" cy="68" r="8"/><circle cx="72" cy="120" r="8"/>
-          <circle cx="126" cy="114" r="8"/><circle cx="160" cy="130" r="8"/><circle cx="104" cy="154" r="8"/></g>
-        <text x="120" y="199" text-anchor="middle" font-family="PT Mono, monospace" font-size="11" fill="var(--electron)">электрон</text>
-      </svg>
-      <p class="note">Зураг 2.1.1 — сурах бичиг, х. 38</p>
-    </div>
-  </div>
-  <p class="lede big"><b>Асуулт:</b> Энэ загвар үнэн эсэхийг яаж шалгах вэ?</p>
-</section>
-
-<section class="slide" data-t="Сэдэлжүүлэх">
-  <div class="eyebrow"><span class="phase">Сэдэлжүүлэх</span><span class="min">4–8 мин</span></div>
-  <h2 class="st">Хайрцгийг нээлгүйгээр дотор нь юу байгааг яаж мэдэх вэ?</h2>
-  <div class="cols c2">
-    <div style="display:flex;flex-direction:column;gap:10px">
-      <p class="lede">Багшийн гарт битүү хайрцаг байна. Нээж болохгүй, дотрыг нь харах боломжгүй.</p>
-      <ul class="plain"><li>Сэгсэрч сонсох — юу мэдэх вэ?</li><li>Жинлэх — юу мэдэх вэ?</li><li>Хазайлгах — юу мэдэх вэ?</li></ul>
-      <p class="quote">Эрдэмтэд атомыг яг ингэж судалсан: нээлгүйгээр, зөвхөн гаднаас нь юм «шидээд».</p>
-      <p class="note"><b>Хосоороо 30 секунд</b> ярилцаад саналаа хэлээрэй.</p>
-    </div>
-    <div data-w="qr"></div>
+    <div class="callout"><b>Яагаад «харьцангуй» вэ?</b> Бодит цэнэг, масс нь маш жижиг тоо учир тэдгээрийг
+      хоорондоо харьцуулж илэрхийлдэг. Ижил нэгжтэй хоёр зүйлийг харьцуулсан тул харьцангуй хэмжигдэхүүн
+      <b>нэгжгүй</b> — грамм ч биш, кулон ч биш.</div>
+    <div data-w="place"></div>
+    <div data-w="mass"></div>
   </div>
 </section>
 
-<section class="slide" data-t="Туршилт">
-  <div class="eyebrow"><span class="phase">Шинэ мэдлэг олгох · Explore</span><span class="min">8–16 мин</span></div>
-  <h2 class="st">1911: Резерфордын алтан ялтасны туршилт</h2>
-  <div data-w="scatter"></div>
-  <p class="note"><b>Ажлын хуудас, Даалгавар 1:</b> хосоороо 3 ажиглалт бичээрэй. Дүгнэлтийн баганыг хараахан бүү бөглө.</p>
+<!-- 5 ─ Хоосон зай ────────────────────────── -->
+<section class="blk" id="hooson">
+  <div class="eyebrow">5 · Масштаб</div>
+  <h2 class="bt">Атомын дотор бараг бүгд хоосон</h2>
+  <p class="lead">Цөм атомын бүх массыг агуулдаг ч эзлэхүүнийх нь өчүүхэн хэсгийг л эзэлдэг.
+    Гулсуурыг чирээд өөрөө үзээрэй.</p>
+  <div class="stack"><div data-w="zoom"></div></div>
 </section>
 
-<section class="slide" data-t="Ажиглалт, дүгнэлт">
-  <div class="eyebrow"><span class="phase">Шинэ мэдлэг олгох · Explain</span><span class="min">16–20 мин</span></div>
-  <h2 class="st">Ажиглалт бүр нэг дүгнэлт төрүүлнэ</h2>
-  <div class="tscroll" style="border:1.5px solid var(--rule);border-radius:var(--r);overflow:hidden">
-    <table class="data">
-      <thead><tr><th style="width:7%">№</th><th style="width:45%">Ажиглалт</th><th style="width:48%">Дүгнэлт</th></tr></thead>
-      <tbody>
-        <tr><td class="num">1</td><td>Альфа туяаны <b>ихэнх</b> хэсэг шулуун нэвтэрсэн</td><td>Атом голдуу <b>хоосон зай</b></td></tr>
-        <tr><td class="num">2</td><td>Цөөн хэсэг нь <b>чиглэлээ өөрчилж</b> сарнисан</td><td>Дотор нь <b>ижил цэнэгтэй</b> зүйл байгаа тул түлхэлцэж байна</td></tr>
-        <tr><td class="num">3</td><td>Маш цөөн хэсэг нь <b>буцаж ойсон</b></td><td>Төвд нь маш <b>бага эзлэхүүнтэй, нягт, эерэг</b> хэсэг — <b>ЦӨМ</b></td></tr>
-      </tbody>
-    </table>
-  </div>
-  <p class="quote">«Энэ нь цаасан алчуур руу 15 дюймын сум буудахад сум эргэж ирээд чамайг цохисонтой адил гайхалтай явдал байлаа.» — Э.Резерфорд</p>
-  <p class="lede"><b>Томсоны загвар яагаад унав?</b> Эерэг цэнэг жигд тархсан байсан бол тийм хүчтэй түлхэлт үүсэх боломжгүй. Цэнэг нэг цэгт <b>төвлөрсөн</b> байж л туяаг буцаана.</p>
-</section>
-
-<section class="slide" data-t="Гарагин загвар">
-  <div class="eyebrow"><span class="phase">Шинэ мэдлэг олгох · Explain</span><span class="min">16–20 мин</span></div>
-  <h2 class="st">Атомын бүтцийн гарагин загвар</h2>
-  <div class="cols c23">
-    <div style="display:flex;flex-direction:column;gap:10px">
-      <p class="lede">Резерфорд 1911 онд дүгнэв: атомын <b>төвд эерэг цэнэгтэй цөм</b>, түүнийг тойрон <b>сөрөг цэнэгтэй электрон</b> оршино.</p>
-      <p class="lede">Нарны аймагтай төстэй тул <b>гарагин загвар</b> гэж нэрлэсэн: нар = цөм, гараг = электрон.</p>
-      <p class="lede">1932 онд <b>Ж.Чедвик</b> цөмөөс цахилгаан саармаг, протонтой ижил масстай гурав дахь хэсэг — <b>нейтрон</b>-ыг олсон.</p>
-    </div>
-    <div class="card">
-      <svg viewBox="0 0 260 215" style="width:100%;height:auto;display:block" aria-label="Гарагин загвар">
-        <circle cx="130" cy="100" r="88" fill="none" stroke="var(--rule)" stroke-width="1.5" stroke-dasharray="3 5"/>
-        <circle cx="130" cy="100" r="56" fill="none" stroke="var(--rule)" stroke-width="1.5" stroke-dasharray="3 5"/>
-        <g><circle cx="118" cy="96" r="12" fill="var(--proton)"/><circle cx="139" cy="94" r="12" fill="var(--neutron)"/>
-           <circle cx="125" cy="113" r="12" fill="var(--proton)"/><circle cx="145" cy="111" r="12" fill="var(--neutron)"/></g>
-        <g fill="var(--electron)"><circle cx="130" cy="44" r="8"/><circle cx="186" cy="100" r="8"/>
-           <circle cx="92" cy="178" r="8"/><circle cx="42" cy="100" r="8"/></g>
-        <text x="130" y="148" text-anchor="middle" font-family="PT Mono, monospace" font-size="11" fill="var(--ink-3)">цөм</text>
-      </svg>
-      <div class="legend"><span class="chip c-p"><span class="mk">+</span>протон</span>
-        <span class="chip c-n"><span class="mk">0</span>нейтрон</span>
-        <span class="chip c-e"><span class="mk">−</span>электрон</span></div>
-    </div>
-  </div>
-</section>
-
-<section class="slide" data-t="Эгэл хэсэг">
-  <div class="eyebrow"><span class="phase">Шинэ мэдлэг олгох · Explain</span><span class="min">20–23 мин</span></div>
-  <h2 class="st">Гурван эгэл хэсэг</h2>
-  <div class="tscroll" style="border:1.5px solid var(--rule);border-radius:var(--r);overflow:hidden">
-    <table class="data">
-      <thead><tr><th>Жижиг хэсэг</th><th>Байрлал</th><th>Харьцангуй цэнэг</th><th>Харьцангуй масс</th></tr></thead>
-      <tbody>
-        <tr><td><span class="chip c-p"><span class="mk">+</span>протон</span></td><td>цөмд</td><td class="num">+1</td><td class="num">1</td></tr>
-        <tr><td><span class="chip c-n"><span class="mk">0</span>нейтрон</span></td><td>цөмд</td><td class="num">0</td><td class="num">1</td></tr>
-        <tr><td><span class="chip c-e"><span class="mk">−</span>электрон</span></td><td>цөмийн тойрог замд</td><td class="num">−1</td><td class="num">1/1840 ≈ 0</td></tr>
-      </tbody>
-    </table>
-  </div>
-  <div class="cols c2">
-    <p class="lede"><b>Яагаад «харьцангуй» вэ?</b> Бодит цэнэг, масс нь маш бага тоо. Ижил нэгжтэй хоёр зүйлийг харьцуулсан тул <b>харьцангуй хэмжигдэхүүн нэгжгүй</b> — грамм ч биш, кулон ч биш.</p>
-    <p class="lede"><b>Яагаад атом саармаг вэ?</b> Протоны тоо = электроны тоо, цэнэг нь хэмжээгээрээ ижил, тэмдгээрээ эсрэг. Нийлбэр нь <b>тэг</b>.</p>
-  </div>
-  <p class="note"><b>Ажлын хуудас, Даалгавар 2:</b> хүснэгтийг нөхөж, хосынхоо хуудастай тулгаж шалгаарай.</p>
-</section>
-
-<section class="slide" data-t="1/1840">
-  <div class="eyebrow"><span class="phase">Шинэ мэдлэг олгох · Explain</span><span class="min">20–23 мин</span></div>
-  <h2 class="st">Яагаад электроны массыг тооцдоггүй вэ?</h2>
-  <div data-w="mass"></div>
-</section>
-
-<section class="slide" data-t="Хоосон зай">
-  <div class="eyebrow"><span class="phase">Шинэ мэдлэг олгох · Explain</span><span class="min">20–23 мин</span></div>
-  <h2 class="st">Атомын дотор бараг бүгд хоосон</h2>
-  <div data-w="zoom"></div>
-</section>
-
-<section class="slide" data-t="Тэмдэглэгээ">
-  <div class="eyebrow"><span class="phase">Бататгах · Elaborate</span><span class="min">23–26 мин</span></div>
-  <h2 class="st">Атомыг гурван тоогоор бичнэ</h2>
-  <div class="cols c2" style="align-items:center">
-    <div style="display:flex;flex-direction:column;gap:12px">
-      <span class="nota" style="font-size:clamp(34px,6.5vw,72px)"><span class="stack"><span class="A">7</span><span class="Z">3</span></span>Li<span class="post N">4</span></span>
-      <div class="legend" style="flex-direction:column;gap:6px">
+<!-- 6 ─ Тэмдэглэгээ ───────────────────────── -->
+<section class="blk" id="temdeglegee">
+  <div class="eyebrow">6 · A, Z, N</div>
+  <h2 class="bt">Атомыг гурван тоогоор бичнэ</h2>
+  <div class="stack">
+    <div class="notabox">
+      <span class="nota"><span class="stack" style="display:inline-flex;flex-direction:column;align-items:flex-end;font-size:.44em;line-height:1.15;margin-right:.07em;gap:0"><span class="A">7</span><span class="Z">3</span></span>Li<span class="post N">4</span></span>
+      <div class="notakey">
         <span><b style="color:var(--gold)">A = 7</b> — массын тоо (зүүн дээд)</span>
         <span><b style="color:var(--proton)">Z = 3</b> — протоны тоо (зүүн доод)</span>
         <span><b style="color:var(--neutron)">N = 4</b> — нейтроны тоо (баруун доод)</span>
       </div>
     </div>
-    <div class="card">
-      <h3>Хамтдаа бодъё — лити</h3>
-      <ul class="plain">
-        <li>Үелэх хүснэгт дэх дэс дугаар = <b>протоны тоо Z = 3</b></li>
-        <li>Цахилгаан саармаг тул <b>электрон = 3</b></li>
-        <li>Массын тоо <b>A = 7</b></li>
-        <li><b>N = A − Z = 7 − 3 = 4</b> нейтрон</li>
-      </ul>
-      <hr class="rule">
-      <p class="lede" style="font-family:var(--f-mono);text-align:center">A = Z + N&nbsp; → &nbsp;N = A − Z</p>
-    </div>
+    <div class="callout" style="font-family:var(--f-mono);font-size:clamp(15px,2.6vw,20px);text-align:center">
+      A = Z + N&nbsp;&nbsp;→&nbsp;&nbsp;N = A − Z</div>
+    <ul class="bul">
+      <li><b>Z</b> нь үелэх хүснэгт дэх дэс дугаар. Элементийг тодорхойлдог нь яг энэ тоо.</li>
+      <li>Цахилгаан саармаг атомд <b>электроны тоо = Z</b>.</li>
+      <li><b>A</b> нь массын тоо: протон + нейтрон. Электроны массыг тооцдоггүй.</li>
+    </ul>
+    <div data-w="builder"></div>
   </div>
-  <p class="note"><b>Анхаар:</b> Z нь үелэх хүснэгтийн дэс дугаар, A нь массын тоо. Хоёр нь өөр тоо — зөрүү нь яг нейтроны тоо.</p>
 </section>
 
-<section class="slide" data-t="Атом угсрах">
-  <div class="eyebrow"><span class="phase">Бататгах · Elaborate</span><span class="min">26–33 мин</span></div>
-  <h2 class="st">Атомаа угсраарай</h2>
-  <div data-w="builder"></div>
-  <p class="note"><b>Ажлын хуудас, Даалгавар 3:</b> дэлгэц дээрх тоог хүснэгтэд буулгаарай. Протоны тоог өөрчлөхөд элементийн нэр юу болж байгааг ажигла.</p>
+<!-- 7 ─ Дасгал ────────────────────────────── -->
+<section class="blk" id="dasgal">
+  <div class="eyebrow">7 · Өөрийгөө шалга</div>
+  <h2 class="bt">Дасгал тоглоом</h2>
+  <p class="lead">10 асуулт, санамсаргүй сонгогдоно. Дахин эхлүүлэх бүрд асуултууд өөрчлөгдөнө.</p>
+  <div class="stack"><div data-w="quiz"></div></div>
 </section>
 
-<section class="slide" data-t="PhET, нэр томьёо">
-  <div class="eyebrow"><span class="phase">Бататгах · Elaborate</span><span class="min">26–33 мин</span></div>
-  <h2 class="st">PhET симуляц ба нэр томьёо</h2>
-  <p class="lede">Симуляцын хэл англи. Товчлууруудыг дараах толиор таниарай.</p>
-  <div class="gloss">
-    <div class="glc"><div class="en">Proton</div><div class="mn">Протон</div></div>
-    <div class="glc"><div class="en">Neutron</div><div class="mn">Нейтрон</div></div>
-    <div class="glc"><div class="en">Electron</div><div class="mn">Электрон</div></div>
-    <div class="glc"><div class="en">Nucleus</div><div class="mn">Цөм</div></div>
-    <div class="glc"><div class="en">Mass Number</div><div class="mn">Массын тоо (A)</div></div>
-    <div class="glc"><div class="en">Net Charge</div><div class="mn">Нийлбэр цэнэг</div></div>
-    <div class="glc"><div class="en">Element Name</div><div class="mn">Элементийн нэр</div></div>
-    <div class="glc"><div class="en">Stable / Unstable</div><div class="mn">Тогтвортой / тогтворгүй</div></div>
-    <div class="glc"><div class="en">Alpha Particle</div><div class="mn">Альфа туяа</div></div>
-    <div class="glc"><div class="en">Gold Foil</div><div class="mn">Алтны нимгэн ялтас</div></div>
-    <div class="glc"><div class="en">Plum Pudding</div><div class="mn">Үзэмтэй талхан загвар</div></div>
-    <div class="glc"><div class="en">Symbol</div><div class="mn">Химийн тэмдэг</div></div>
+<!-- 8 ─ Толь ──────────────────────────────── -->
+<section class="blk" id="toli">
+  <div class="eyebrow">8 · Нэмэлт</div>
+  <h2 class="bt">Нэр томьёо ба PhET симуляц</h2>
+  <p class="lead">PhET-ийн симуляцууд англи хэлтэй. Товчлууруудыг доорх толиор таниарай.</p>
+  <div class="glossg">
+    <div class="gl"><div class="en">Proton</div><div class="mn">Протон</div></div>
+    <div class="gl"><div class="en">Neutron</div><div class="mn">Нейтрон</div></div>
+    <div class="gl"><div class="en">Electron</div><div class="mn">Электрон</div></div>
+    <div class="gl"><div class="en">Nucleus</div><div class="mn">Цөм</div></div>
+    <div class="gl"><div class="en">Mass Number</div><div class="mn">Массын тоо (A)</div></div>
+    <div class="gl"><div class="en">Net Charge</div><div class="mn">Нийлбэр цэнэг</div></div>
+    <div class="gl"><div class="en">Element Name</div><div class="mn">Элементийн нэр</div></div>
+    <div class="gl"><div class="en">Alpha Particle</div><div class="mn">Альфа туяа</div></div>
+    <div class="gl"><div class="en">Gold Foil</div><div class="mn">Алтны нимгэн ялтас</div></div>
+    <div class="gl"><div class="en">Plum Pudding</div><div class="mn">Үзэмтэй талхан загвар</div></div>
   </div>
-  <div class="linkrow">
+  <div class="links">
     <a href="https://phet.colorado.edu/sims/html/build-an-atom/latest/build-an-atom_en.html" target="_blank" rel="noopener">PhET · Build an Atom</a>
     <a href="https://phet.colorado.edu/sims/html/rutherford-scattering/latest/rutherford-scattering_en.html" target="_blank" rel="noopener">PhET · Rutherford Scattering</a>
   </div>
-  <p class="note">Хосоороо ажиллана: нэг нь симуляцыг удирдана, нөгөө нь хүснэгтээ бөглөнө. 3 минут тутамд үүргээ солиорой.</p>
+  <div class="callout" style="margin-top:16px"><b>Гэрийн даалгавар.</b> Сурах бичиг х. 41, Дасгал 2;
+    х. 44, Асуулт 1–5. Дараагийн хичээлээр: электроны хуваарилалт — 2, 8, 8 давхраа.</div>
 </section>
 
-<section class="slide" data-t="Дасгал тоглоом">
-  <div class="eyebrow"><span class="phase">Үнэлэх, дүгнэх</span><span class="min">33–38 мин</span></div>
-  <h2 class="st">Хамтдаа шалгая</h2>
-  <div data-w="quiz"></div>
-</section>
+<footer>
+  Хими VIII · II бүлэг · 2.1 Атомын бүтэц · Ерөнхий боловсролын 8-р анги<br>
+  Бэлтгэсэн: Эрдэнэбат С. · EDUC201 Сургалтын технологийн удиртгал
+  <br><a class="totop" href="#asuudal">↑ Эхлэл рүү буцах</a> &nbsp;·&nbsp; <a class="totop" href="index.html">Нүүр хуудас</a>
+</footer>
 
-<section class="slide" data-t="Дүгнэлт">
-  <div class="eyebrow"><span class="phase">Үнэлэх, дүгнэх · Гэрийн даалгавар</span><span class="min">33–40 мин</span></div>
-  <h2 class="st">Хайрцаг руугаа эргэж оръё</h2>
-  <p class="lede big">Резерфорд хайрцгийг нээгээгүй. Тэр зүгээр л дотогш нь <b>юм шидээд</b>, хэрхэн буцаж ирснийг нь ажигласан. Шинжлэх ухаан ингэж ажилладаг.</p>
-  <hr class="rule">
-  <div class="cols c2">
-    <div class="card">
-      <h3>Өнөөдөр бид юу мэдсэн бэ</h3>
-      <ul class="plain">
-        <li>Атомын төвд <b>цөм</b> — протон ба нейтрон.</li>
-        <li>Цөмийг тойрон <b>электрон</b>.</li>
-        <li>Атом <b>саармаг</b>: протон = электрон.</li>
-        <li>Масс ≈ протон + нейтрон = <b>A</b>.</li>
-        <li><b>N = A − Z</b>.</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>Гарах тасалбар ба гэрийн даалгавар</h3>
-      <ul class="plain">
-        <li>Гарах тасалбар: <b>5 асуулт, 12 оноо, 5 минут</b>.</li>
-        <li>Гэрийн даалгавар: сурах бичиг <b>х. 41 Дасгал 2</b>, <b>х. 44 Асуулт 1–5</b>.</li>
-        <li>Дараагийн хичээл: <b>электроны хуваарилалт</b> — 2, 8, 8 давхраа (Н.Бор, 1913).</li>
-      </ul>
-      <p class="note">Гэртээ давтахдаа сурагчийн хуудсыг утсаараа нээж, симуляцуудыг дахин ажиллуулж болно.</p>
-    </div>
-  </div>
-</section>
-
-<div class="bar">
-  <button class="nb" id="prev" aria-label="Өмнөх слайд">←</button>
-  <div class="dots" id="dots" role="tablist" aria-label="Слайдууд"></div>
-  <span class="count" id="count"></span>
-  <button class="nb" id="full" aria-label="Бүтэн дэлгэц">⛶</button>
-  <button class="nb" id="next" aria-label="Дараагийн слайд">→</button>
-</div>
-</div>
-<p class="pagefoot">EDUC201 · Хими VIII, 2.1 Атомын бүтэц · <a href="surgach.html">Сурагчийн хуудас →</a> · <a href="index.html">Нүүр</a></p>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
 /* ══════════════════════════════════════════════════════════════
    Атомын бүтэц — интерактив симуляцууд
@@ -1146,45 +1048,15 @@ else boot();
 </script>
 <script>
 (function(){
-  "use strict";
-  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
-  var dots = document.getElementById('dots'), count = document.getElementById('count'), cur = 0;
-  slides.forEach(function(s,i){
-    var b = document.createElement('button');
-    b.className = 'dot'; b.type = 'button'; b.textContent = String(i+1);
-    b.title = s.dataset.t || ('Слайд ' + (i+1));
-    b.setAttribute('role','tab');
-    b.addEventListener('click', function(){ go(i); });
-    dots.appendChild(b);
+  Array.prototype.forEach.call(document.querySelectorAll('.pair'), function(p){
+    var b = p.querySelector('button'), a = p.querySelector('.ans'), pm = p.querySelector('.pm');
+    b.setAttribute('aria-expanded','false');
+    b.addEventListener('click', function(){
+      a.hidden = !a.hidden;
+      pm.textContent = a.hidden ? '+' : '−';
+      b.setAttribute('aria-expanded', String(!a.hidden));
+    });
   });
-  function go(i){
-    cur = Math.max(0, Math.min(slides.length-1, i));
-    slides.forEach(function(s,k){ s.hidden = (k !== cur); });
-    Array.prototype.forEach.call(dots.children, function(d,k){ d.setAttribute('aria-current', k === cur ? 'true':'false'); });
-    count.textContent = (cur+1) + ' / ' + slides.length;
-    document.getElementById('prev').disabled = cur === 0;
-    document.getElementById('next').disabled = cur === slides.length-1;
-    slides[cur].scrollTop = 0;
-    window.dispatchEvent(new Event('resize'));
-  }
-  document.getElementById('prev').addEventListener('click', function(){ go(cur-1); });
-  document.getElementById('next').addEventListener('click', function(){ go(cur+1); });
-  document.getElementById('full').addEventListener('click', function(){
-    try {
-      if (document.fullscreenElement) document.exitFullscreen();
-      else document.documentElement.requestFullscreen();
-    } catch(e){}
-  });
-  document.addEventListener('keydown', function(e){
-    var t = (e.target && e.target.tagName) || '';
-    if (t === 'INPUT' || t === 'TEXTAREA') return;
-    if (e.key === 'ArrowRight' || e.key === 'PageDown'){ go(cur+1); e.preventDefault(); }
-    else if (e.key === 'ArrowLeft' || e.key === 'PageUp'){ go(cur-1); e.preventDefault(); }
-    else if (e.key === 'Home'){ go(0); e.preventDefault(); }
-    else if (e.key === 'End'){ go(slides.length-1); e.preventDefault(); }
-    else if (e.key === 'f' || e.key === 'F'){ document.getElementById('full').click(); }
-  });
-  go(0);
 })();
 </script>
 </body>

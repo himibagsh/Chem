@@ -1,0 +1,1191 @@
+<!doctype html>
+<html lang="mn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Багшийн үзүүлэн: Хими VIII, 2.1 Атомын бүтэц. 15 слайд, 6 интерактив симуляц.">
+<meta name="theme-color" content="#E6EDF6">
+<title>Атомын бүтэц — үзүүлэн</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=PT+Mono&family=PT+Sans:ital,wght@0,400;0,700;1,400&family=PT+Serif:wght@400;700&display=swap">
+<style>
+:root{
+  color-scheme: light;
+  --ground:#E6EDF6; --paper:#FFFFFF; --surface:#F4F8FC; --sunk:#EAF0F7;
+  --ink:#16202E; --ink-2:#4B5B71; --ink-3:#8593A6;
+  --rule:#D0DBE8; --rule-soft:#E4EBF3;
+  --proton:#D6303F;  --proton-bg:#FDECEE;
+  --neutron:#12855A; --neutron-bg:#E1F4EB;
+  --electron:#2159C5;--electron-bg:#E6EEFC;
+  --gold:#A9760C;    --gold-bg:#FCF1D6;
+  --ok:#12855A; --ok-bg:#E1F4EB;
+  --no:#D6303F; --no-bg:#FDECEE;
+  --shadow:0 1px 2px rgba(22,32,46,.05), 0 6px 20px rgba(22,32,46,.07);
+  --shadow-lg:0 2px 4px rgba(22,32,46,.06), 0 14px 40px rgba(22,32,46,.11);
+  --f-display:"PT Serif", Georgia, "Times New Roman", serif;
+  --f-body:"PT Sans", "Segoe UI", Helvetica, Arial, sans-serif;
+  --f-mono:"PT Mono", "SF Mono", Consolas, monospace;
+  --r:10px;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--ground); color:var(--ink); font-family:var(--f-body); -webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{margin:0; font-family:var(--f-display); font-weight:700; text-wrap:balance; letter-spacing:-.012em}
+p{margin:0}
+button{font:inherit; color:inherit}
+img{max-width:100%}
+:focus-visible{outline:3px solid var(--gold); outline-offset:2px; border-radius:4px}
+
+/* ── particle chips ─────────────────────────── */
+.chip{display:inline-flex; align-items:center; gap:.4em; font-weight:700; padding:.18em .6em;
+  border-radius:999px; font-size:.92em; white-space:nowrap}
+.chip .mk{font-family:var(--f-mono); font-weight:700}
+.c-p{background:var(--proton-bg); color:var(--proton)}
+.c-n{background:var(--neutron-bg); color:var(--neutron)}
+.c-e{background:var(--electron-bg); color:var(--electron)}
+.c-g{background:var(--gold-bg); color:var(--gold)}
+
+/* ── buttons ────────────────────────────────── */
+.btn{border:1.5px solid var(--rule); background:var(--paper); border-radius:8px;
+  padding:9px 15px; cursor:pointer; font-size:15px; font-weight:700; color:var(--ink-2);
+  transition:border-color .12s, color .12s, background .12s; line-height:1.2}
+.btn:hover{border-color:var(--gold); color:var(--gold)}
+.btn:active{transform:translateY(1px)}
+.btn[disabled]{opacity:.4; cursor:default; transform:none}
+.btn-go{background:var(--gold); border-color:var(--gold); color:#fff}
+.btn-go:hover{background:#946608; border-color:#946608; color:#fff}
+.btn-sm{padding:6px 11px; font-size:13.5px}
+.seg{display:inline-flex; border:1.5px solid var(--rule); border-radius:8px; overflow:hidden; background:var(--paper)}
+.seg button{background:transparent; border:0; padding:9px 15px; cursor:pointer; font-size:15px; font-weight:700; color:var(--ink-3)}
+.seg button+button{border-left:1.5px solid var(--rule)}
+.seg button[aria-pressed="true"]{background:var(--gold); color:#fff}
+
+/* ── widget shell ───────────────────────────── */
+.w{background:var(--paper); border:1.5px solid var(--rule); border-radius:var(--r);
+   padding:clamp(12px,2.2vw,18px); display:flex; flex-direction:column; gap:12px; box-shadow:var(--shadow)}
+.w-head{display:flex; flex-wrap:wrap; align-items:baseline; gap:6px 12px}
+.w-head h3{font-size:clamp(16px,2.1vw,21px)}
+.w-head .tag{font-family:var(--f-mono); font-size:11px; letter-spacing:.07em; text-transform:uppercase;
+  color:var(--gold); background:var(--gold-bg); padding:3px 8px; border-radius:999px}
+.w-hint{font-size:clamp(13px,1.5vw,15.5px); color:var(--ink-2)}
+.w-ctl{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+.w-ctl label{font-size:13.5px; color:var(--ink-2); display:inline-flex; align-items:center; gap:7px}
+input[type=range]{accent-color:var(--gold); width:clamp(110px,22vw,190px)}
+.stats{display:flex; flex-wrap:wrap; gap:6px; font-family:var(--f-mono); font-size:12.5px}
+.stats b{font-weight:700}
+.stat{padding:4px 10px; border-radius:999px; background:var(--sunk); color:var(--ink-2); font-variant-numeric:tabular-nums}
+.stat.p-{background:var(--proton-bg); color:var(--proton)}
+.stat.g-{background:var(--gold-bg); color:var(--gold)}
+.stat.n-{background:var(--sunk); color:var(--ink-2)}
+.cvwrap{position:relative; border:1.5px solid var(--rule-soft); border-radius:8px; overflow:hidden; background:var(--surface)}
+.cvwrap canvas{display:block; width:100%; height:100%}
+.ratio-wide{aspect-ratio:16/9}
+.ratio-sq{aspect-ratio:4/3}
+@media (max-width:560px){ .ratio-wide{aspect-ratio:4/3} }
+
+/* ── reveal card ────────────────────────────── */
+.reveal{border:1.5px solid var(--rule); border-radius:8px; background:var(--surface); overflow:hidden}
+.reveal>button{width:100%; text-align:left; background:transparent; border:0; padding:11px 14px;
+  cursor:pointer; font-size:clamp(14px,1.6vw,16.5px); font-weight:700; display:flex; gap:10px; align-items:center}
+.reveal>button::after{content:"+"; margin-left:auto; font-family:var(--f-mono); color:var(--gold); font-size:19px}
+.reveal[open]>button::after{content:"−"}
+.reveal .body{padding:0 14px 12px; font-size:clamp(13.5px,1.5vw,16px); color:var(--ink-2)}
+
+/* ── quiz ───────────────────────────────────── */
+.opts{display:grid; gap:8px; grid-template-columns:1fr 1fr}
+@media (max-width:520px){ .opts{grid-template-columns:1fr} }
+.opt{text-align:left; border:1.5px solid var(--rule); background:var(--paper); border-radius:8px;
+  padding:11px 14px; cursor:pointer; font-size:clamp(14px,1.6vw,16px); font-weight:700; color:var(--ink)}
+.opt:hover:not([disabled]){border-color:var(--gold)}
+.opt.good{background:var(--ok-bg); border-color:var(--ok); color:var(--ok)}
+.opt.bad{background:var(--no-bg); border-color:var(--no); color:var(--no)}
+.fb{padding:10px 13px; border-radius:8px; font-size:clamp(13.5px,1.5vw,16px); font-weight:700}
+.fb.good{background:var(--ok-bg); color:var(--ok)} .fb.bad{background:var(--no-bg); color:var(--no)}
+.bar-track{height:8px; background:var(--sunk); border-radius:999px; overflow:hidden}
+.bar-fill{height:100%; background:var(--gold); border-radius:999px; transition:width .3s}
+.qtext{font-size:clamp(16px,2.2vw,22px); font-weight:700; font-family:var(--f-display)}
+
+/* ── atom builder ───────────────────────────── */
+.bld{display:grid; gap:12px; grid-template-columns:minmax(0,1fr) minmax(0,1.05fr)}
+@media (max-width:700px){ .bld{grid-template-columns:1fr} }
+.ctr{display:flex; align-items:center; gap:9px; border:1.5px solid var(--rule); border-radius:8px;
+  padding:7px 10px; background:var(--paper)}
+.ctr .lbl{flex:1; font-weight:700; font-size:clamp(13.5px,1.5vw,16px)}
+.ctr .val{font-family:var(--f-mono); font-size:clamp(17px,2.1vw,22px); min-width:2.4ch; text-align:center; font-variant-numeric:tabular-nums}
+.ctr button{width:34px; height:34px; border:1.5px solid var(--rule); background:var(--surface);
+  border-radius:7px; cursor:pointer; font-size:19px; line-height:1; font-weight:700}
+.ctr button:hover{border-color:var(--gold); color:var(--gold)}
+.ctr.p{border-left:5px solid var(--proton)} .ctr.n{border-left:5px solid var(--neutron)} .ctr.e{border-left:5px solid var(--electron)}
+.bld>svg{max-width:400px; margin-inline:auto}
+.ro-grid{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px}
+.ro{background:var(--surface); border:1.5px solid var(--rule-soft); border-radius:8px; padding:8px 11px}
+.ro .k{font-family:var(--f-mono); font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-3)}
+.ro .v{font-size:clamp(15px,1.8vw,20px); font-weight:700}
+.status{font-size:clamp(13.5px,1.5vw,16px); font-weight:700; padding:9px 12px; border-radius:8px}
+.status.ok{background:var(--ok-bg); color:var(--ok)}
+.status.ion{background:var(--gold-bg); color:var(--gold)}
+
+/* ── notation ───────────────────────────────── */
+.nota{font-family:var(--f-mono); display:inline-flex; align-items:center; line-height:1; font-weight:700}
+.nota .stack{display:inline-flex; flex-direction:column; align-items:flex-end; font-size:.44em; line-height:1.15; margin-right:.07em}
+.nota .post{font-size:.44em; align-self:flex-end; margin-left:.05em; line-height:1.85}
+.nota .A{color:var(--gold)} .nota .Z{color:var(--proton)} .nota .N{color:var(--neutron)}
+
+/* ── data table ─────────────────────────────── */
+.tscroll{overflow-x:auto; -webkit-overflow-scrolling:touch}
+table.data{border-collapse:separate; border-spacing:0; width:100%; font-size:clamp(13px,1.6vw,17px); background:var(--paper)}
+table.data th,table.data td{border-bottom:1.5px solid var(--rule-soft); padding:.55em .7em; text-align:left}
+table.data thead th{background:var(--sunk); color:var(--ink-2); font-size:.85em; letter-spacing:.04em;
+  text-transform:uppercase; border-bottom:2px solid var(--rule)}
+table.data tr:last-child td{border-bottom:0}
+table.data td.num{font-family:var(--f-mono); text-align:center; font-variant-numeric:tabular-nums; font-weight:700}
+
+/* ── placement game ─────────────────────────── */
+.zones{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+.zone{border:2.5px dashed var(--rule); border-radius:var(--r); padding:14px 10px; text-align:center;
+  cursor:pointer; background:var(--surface); transition:border-color .12s, background .12s}
+.zone:hover:not([disabled]){border-color:var(--gold); background:var(--gold-bg)}
+.zone .zt{font-weight:700; font-size:clamp(14px,1.7vw,17px)}
+.zone .zs{font-size:12.5px; color:var(--ink-3); margin-top:3px}
+.token{display:grid; place-items:center; gap:6px; padding:14px 10px; border-radius:var(--r); background:var(--surface);
+  border:1.5px solid var(--rule-soft)}
+.token .ball{width:52px; height:52px; border-radius:50%; display:grid; place-items:center;
+  color:#fff; font-family:var(--f-mono); font-size:20px; font-weight:700}
+.token .tn{font-weight:700; font-size:clamp(15px,1.9vw,19px)}
+
+@media (prefers-reduced-motion:reduce){ *{animation:none!important; transition:none!important} }
+
+
+/* ══ багшийн үзүүлэн ═══════════════════════════ */
+body{font-size:16px; line-height:1.45}
+.wrap{max-width:1240px; margin:0 auto; padding-block:14px 0; padding-left:16px; padding-right:16px}
+.stage{position:relative; background:var(--paper); border:1.5px solid var(--rule); border-radius:12px;
+  box-shadow:var(--shadow-lg); overflow:hidden; aspect-ratio:16/9; display:grid}
+@media (max-width:900px){ .stage{aspect-ratio:auto; min-height:76vh} }
+
+.slide{grid-area:1/1; display:flex; flex-direction:column; gap:clamp(9px,1.5vw,18px);
+  padding:clamp(18px,3vw,38px) clamp(16px,3.6vw,48px) clamp(50px,4.6vw,60px);
+  overflow-y:auto; overflow-x:hidden}
+.slide[hidden]{display:none!important}
+.eyebrow{display:flex; flex-wrap:wrap; align-items:baseline; gap:10px;
+  font-family:var(--f-mono); font-size:clamp(10px,1.05vw,12.5px); letter-spacing:.09em;
+  text-transform:uppercase; color:var(--ink-3)}
+.eyebrow .phase{color:var(--gold); font-weight:700}
+.eyebrow .min{margin-left:auto}
+h2.st{font-size:clamp(24px,3.7vw,46px); line-height:1.1}
+.lede{font-size:clamp(14.5px,1.65vw,21px); color:var(--ink-2); max-width:64ch}
+.lede.big{font-size:clamp(16px,2vw,25px); color:var(--ink)}
+.note{font-size:clamp(12px,1.25vw,15px); color:var(--ink-3)}
+.note b{color:var(--gold)}
+hr.rule{height:1.5px; background:var(--rule-soft); border:0; margin:0}
+
+.cols{display:grid; gap:clamp(12px,1.8vw,26px)}
+.c2{grid-template-columns:1fr 1fr}
+.c23{grid-template-columns:1fr 1.25fr}
+.c32{grid-template-columns:1.3fr 1fr}
+@media (max-width:900px){ .c2,.c23,.c32{grid-template-columns:1fr} }
+.card{background:var(--surface); border:1.5px solid var(--rule); border-radius:var(--r);
+  padding:clamp(12px,1.6vw,20px); display:flex; flex-direction:column; gap:9px}
+.card h3{font-family:var(--f-body); font-weight:700; font-size:clamp(14px,1.5vw,19px); color:var(--gold)}
+ul.plain{margin:0; padding-left:1.1em; font-size:clamp(14px,1.6vw,20px); color:var(--ink-2)}
+ul.plain li{margin-bottom:5px} ul.plain li::marker{color:var(--gold)}
+.quote{border-left:5px solid var(--gold); padding-left:16px; font-family:var(--f-display);
+  font-size:clamp(15px,1.9vw,26px); font-weight:700; line-height:1.25}
+
+.goal{display:flex; gap:14px; align-items:flex-start; padding:clamp(9px,1.3vw,15px) 0;
+  border-bottom:1.5px solid var(--rule-soft)}
+.goal:last-child{border-bottom:0}
+.goal .n{flex:0 0 auto; width:36px; height:36px; border-radius:50%; background:var(--gold-bg);
+  color:var(--gold); font-family:var(--f-mono); font-size:16px; font-weight:700; display:grid; place-items:center}
+.goal p{font-size:clamp(14.5px,1.7vw,22px)}
+.legend{display:flex; gap:16px; flex-wrap:wrap; font-size:clamp(12.5px,1.35vw,17px); color:var(--ink-2)}
+.legend b{font-family:var(--f-mono)}
+.linkrow{display:flex; flex-wrap:wrap; gap:9px}
+.linkrow a{font-weight:700; font-size:clamp(12.5px,1.3vw,16px); text-decoration:none; color:var(--electron);
+  background:var(--surface); border:1.5px solid var(--rule); border-radius:8px; padding:9px 13px}
+.gloss{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:7px}
+.glc{border:1.5px solid var(--rule); border-radius:8px; padding:7px 10px; background:var(--surface)}
+.glc .en{font-family:var(--f-mono); font-size:11px; color:var(--gold)}
+.glc .mn{font-weight:700; font-size:clamp(13px,1.35vw,16px)}
+
+/* ── title slide ── */
+.hero{justify-content:center; background:
+  radial-gradient(circle at 82% 26%, var(--gold-bg) 0%, transparent 52%), var(--paper)}
+.hero .kick{font-family:var(--f-mono); font-size:clamp(10.5px,1.15vw,14px); letter-spacing:.16em;
+  text-transform:uppercase; color:var(--gold)}
+.hero h1{font-size:clamp(32px,6.6vw,80px); line-height:1.01}
+.hero .meta{display:flex; flex-wrap:wrap; gap:9px 22px; font-size:clamp(12.5px,1.35vw,17px); color:var(--ink-2)}
+.hero .meta b{color:var(--ink)}
+
+/* ── nav ── */
+.bar{position:absolute; left:0; right:0; bottom:0; display:flex; align-items:center; gap:8px;
+  padding:8px clamp(12px,2.2vw,20px); background:var(--paper); border-top:1.5px solid var(--rule-soft)}
+.dots{display:flex; gap:3px; flex-wrap:wrap; flex:1; min-width:0}
+.dot{width:19px; height:19px; padding:0; border:0; border-radius:4px; cursor:pointer; background:var(--sunk);
+  font-family:var(--f-mono); font-size:9.5px; line-height:19px; color:var(--ink-3); text-align:center}
+.dot:hover{background:var(--ink-3); color:#fff}
+.dot[aria-current="true"]{background:var(--gold); color:#fff}
+.count{font-family:var(--f-mono); font-size:11.5px; color:var(--ink-3); font-variant-numeric:tabular-nums}
+.nb{border:1.5px solid var(--rule); background:var(--surface); border-radius:7px; padding:5px 13px;
+  cursor:pointer; font-size:14px; font-weight:700; color:var(--ink-2)}
+.nb:hover{border-color:var(--gold); color:var(--gold)}
+.nb[disabled]{opacity:.35; cursor:default; border-color:var(--rule); color:var(--ink-3)}
+.pagefoot{text-align:center; font-size:13px; color:var(--ink-3); padding-block:12px 20px}
+.pagefoot a{color:var(--gold); font-weight:700}
+
+/* ── слайдын дотор виджетүүдийг нягтруулах ── */
+.slide .w{box-shadow:none; border:0; padding:0; gap:10px}
+.slide .w .w-head h3{font-size:clamp(14px,1.5vw,18px)}
+.slide .w .w-hint{font-size:clamp(12.5px,1.3vw,16px)}
+.slide .cvwrap.ratio-wide{aspect-ratio:2.5/1}
+.slide .cvwrap.ratio-sq{aspect-ratio:16/9}
+.slide .bld>svg{max-width:330px; max-height:270px}
+.slide .qtext{font-size:clamp(15px,1.9vw,23px)}
+.slide .token .ball{width:44px; height:44px; font-size:18px}
+@media (max-width:900px){ .slide .cvwrap.ratio-wide{aspect-ratio:16/9} }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<div class="stage" id="stage">
+
+<section class="slide hero" data-t="Гарчиг">
+  <div class="kick">Хими VIII · II бүлэг · 2.1 Атомын бүтэц</div>
+  <h1>Атом дотор<br>юу байна вэ?</h1>
+  <p class="lede big">Атомыг бүрдүүлэгч эгэл хэсэг ба атомын бүтцийн загвар</p>
+  <hr class="rule">
+  <div class="meta"><span><b>40 минут</b> · 8-р анги</span><span>Сурах бичиг <b>х. 38–45</b></span><span>Багш: <b>Эрдэнэбат С.</b></span></div>
+  <p class="note">Сумны товч <b>←</b> <b>→</b>, эсвэл доорх дугаарууд дээр дарж слайд солино. <b>F</b> — бүтэн дэлгэц.</p>
+</section>
+
+<section class="slide" data-t="Зорилт">
+  <div class="eyebrow"><span class="phase">Сэргээн санах</span><span class="min">0–4 мин</span></div>
+  <h2 class="st">Хичээл дуусахад та…</h2>
+  <div>
+    <div class="goal"><span class="n">1</span><p><b>протон, нейтрон, электрон</b>-ы байрлал, харьцангуй цэнэг, харьцангуй массыг нэрлэж чадна.</p></div>
+    <div class="goal"><span class="n">2</span><p><b>Резерфордын туршилт</b>-аас атомын цөмийн тухай ямар дүгнэлт гарсныг тайлбарлаж чадна.</p></div>
+    <div class="goal"><span class="n">3</span><p>массын тоо <b>A</b> ба протоны тоо <b>Z</b>-ээс протон, нейтрон, электроны тоог <b>олж чадна</b>.</p></div>
+  </div>
+  <hr class="rule">
+  <p class="note">Ажлын хуудсаа гаргаж нэрээ бичээрэй. Өнөөдөр 4 даалгавар, төгсгөлд нь 5 минутын гарах тасалбар байна.</p>
+</section>
+
+<section class="slide" data-t="Томсоны загвар">
+  <div class="eyebrow"><span class="phase">Сэргээн санах</span><span class="min">0–4 мин</span></div>
+  <h2 class="st">1904 он: атом бол «үзэмтэй талх»</h2>
+  <div class="cols c23">
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p class="lede">7-р ангид бид ингэж үзсэн: <b>«Атом бол химийн урвалаар цаашид задрахгүй хамгийн жижиг хэсэг»</b>.</p>
+      <p class="lede">Гэвч 1896 онд <b>Ж.Ж.Томсон</b> атомаас сөрөг цэнэгтэй урсгал ялгарахыг нээв — атом дотроо ямар нэг зүйлтэй байжээ. Тэр хэсгийг <b>электрон</b> гэж нэрлэсэн.</p>
+      <p class="quote">Атом = эерэг цэнэгтэй цул гурил, дотор нь үзэм шиг тараагдсан электронууд.</p>
+    </div>
+    <div class="card">
+      <svg viewBox="0 0 240 205" style="width:100%;height:auto;display:block" aria-label="Томсоны үзэмтэй талхан загвар">
+        <circle cx="120" cy="102" r="82" fill="var(--proton-bg)" stroke="var(--proton)" stroke-width="2"/>
+        <text x="120" y="20" text-anchor="middle" font-family="PT Mono, monospace" font-size="11" fill="var(--proton)">эерэг цэнэг жигд тархсан</text>
+        <g fill="var(--electron)"><circle cx="92" cy="74" r="8"/><circle cx="148" cy="68" r="8"/><circle cx="72" cy="120" r="8"/>
+          <circle cx="126" cy="114" r="8"/><circle cx="160" cy="130" r="8"/><circle cx="104" cy="154" r="8"/></g>
+        <text x="120" y="199" text-anchor="middle" font-family="PT Mono, monospace" font-size="11" fill="var(--electron)">электрон</text>
+      </svg>
+      <p class="note">Зураг 2.1.1 — сурах бичиг, х. 38</p>
+    </div>
+  </div>
+  <p class="lede big"><b>Асуулт:</b> Энэ загвар үнэн эсэхийг яаж шалгах вэ?</p>
+</section>
+
+<section class="slide" data-t="Сэдэлжүүлэх">
+  <div class="eyebrow"><span class="phase">Сэдэлжүүлэх</span><span class="min">4–8 мин</span></div>
+  <h2 class="st">Хайрцгийг нээлгүйгээр дотор нь юу байгааг яаж мэдэх вэ?</h2>
+  <div class="cols c2">
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p class="lede">Багшийн гарт битүү хайрцаг байна. Нээж болохгүй, дотрыг нь харах боломжгүй.</p>
+      <ul class="plain"><li>Сэгсэрч сонсох — юу мэдэх вэ?</li><li>Жинлэх — юу мэдэх вэ?</li><li>Хазайлгах — юу мэдэх вэ?</li></ul>
+      <p class="quote">Эрдэмтэд атомыг яг ингэж судалсан: нээлгүйгээр, зөвхөн гаднаас нь юм «шидээд».</p>
+      <p class="note"><b>Хосоороо 30 секунд</b> ярилцаад саналаа хэлээрэй.</p>
+    </div>
+    <div data-w="qr"></div>
+  </div>
+</section>
+
+<section class="slide" data-t="Туршилт">
+  <div class="eyebrow"><span class="phase">Шинэ мэдлэг олгох · Explore</span><span class="min">8–16 мин</span></div>
+  <h2 class="st">1911: Резерфордын алтан ялтасны туршилт</h2>
+  <div data-w="scatter"></div>
+  <p class="note"><b>Ажлын хуудас, Даалгавар 1:</b> хосоороо 3 ажиглалт бичээрэй. Дүгнэлтийн баганыг хараахан бүү бөглө.</p>
+</section>
+
+<section class="slide" data-t="Ажиглалт, дүгнэлт">
+  <div class="eyebrow"><span class="phase">Шинэ мэдлэг олгох · Explain</span><span class="min">16–20 мин</span></div>
+  <h2 class="st">Ажиглалт бүр нэг дүгнэлт төрүүлнэ</h2>
+  <div class="tscroll" style="border:1.5px solid var(--rule);border-radius:var(--r);overflow:hidden">
+    <table class="data">
+      <thead><tr><th style="width:7%">№</th><th style="width:45%">Ажиглалт</th><th style="width:48%">Дүгнэлт</th></tr></thead>
+      <tbody>
+        <tr><td class="num">1</td><td>Альфа туяаны <b>ихэнх</b> хэсэг шулуун нэвтэрсэн</td><td>Атом голдуу <b>хоосон зай</b></td></tr>
+        <tr><td class="num">2</td><td>Цөөн хэсэг нь <b>чиглэлээ өөрчилж</b> сарнисан</td><td>Дотор нь <b>ижил цэнэгтэй</b> зүйл байгаа тул түлхэлцэж байна</td></tr>
+        <tr><td class="num">3</td><td>Маш цөөн хэсэг нь <b>буцаж ойсон</b></td><td>Төвд нь маш <b>бага эзлэхүүнтэй, нягт, эерэг</b> хэсэг — <b>ЦӨМ</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="quote">«Энэ нь цаасан алчуур руу 15 дюймын сум буудахад сум эргэж ирээд чамайг цохисонтой адил гайхалтай явдал байлаа.» — Э.Резерфорд</p>
+  <p class="lede"><b>Томсоны загвар яагаад унав?</b> Эерэг цэнэг жигд тархсан байсан бол тийм хүчтэй түлхэлт үүсэх боломжгүй. Цэнэг нэг цэгт <b>төвлөрсөн</b> байж л туяаг буцаана.</p>
+</section>
+
+<section class="slide" data-t="Гарагин загвар">
+  <div class="eyebrow"><span class="phase">Шинэ мэдлэг олгох · Explain</span><span class="min">16–20 мин</span></div>
+  <h2 class="st">Атомын бүтцийн гарагин загвар</h2>
+  <div class="cols c23">
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p class="lede">Резерфорд 1911 онд дүгнэв: атомын <b>төвд эерэг цэнэгтэй цөм</b>, түүнийг тойрон <b>сөрөг цэнэгтэй электрон</b> оршино.</p>
+      <p class="lede">Нарны аймагтай төстэй тул <b>гарагин загвар</b> гэж нэрлэсэн: нар = цөм, гараг = электрон.</p>
+      <p class="lede">1932 онд <b>Ж.Чедвик</b> цөмөөс цахилгаан саармаг, протонтой ижил масстай гурав дахь хэсэг — <b>нейтрон</b>-ыг олсон.</p>
+    </div>
+    <div class="card">
+      <svg viewBox="0 0 260 215" style="width:100%;height:auto;display:block" aria-label="Гарагин загвар">
+        <circle cx="130" cy="100" r="88" fill="none" stroke="var(--rule)" stroke-width="1.5" stroke-dasharray="3 5"/>
+        <circle cx="130" cy="100" r="56" fill="none" stroke="var(--rule)" stroke-width="1.5" stroke-dasharray="3 5"/>
+        <g><circle cx="118" cy="96" r="12" fill="var(--proton)"/><circle cx="139" cy="94" r="12" fill="var(--neutron)"/>
+           <circle cx="125" cy="113" r="12" fill="var(--proton)"/><circle cx="145" cy="111" r="12" fill="var(--neutron)"/></g>
+        <g fill="var(--electron)"><circle cx="130" cy="44" r="8"/><circle cx="186" cy="100" r="8"/>
+           <circle cx="92" cy="178" r="8"/><circle cx="42" cy="100" r="8"/></g>
+        <text x="130" y="148" text-anchor="middle" font-family="PT Mono, monospace" font-size="11" fill="var(--ink-3)">цөм</text>
+      </svg>
+      <div class="legend"><span class="chip c-p"><span class="mk">+</span>протон</span>
+        <span class="chip c-n"><span class="mk">0</span>нейтрон</span>
+        <span class="chip c-e"><span class="mk">−</span>электрон</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-t="Эгэл хэсэг">
+  <div class="eyebrow"><span class="phase">Шинэ мэдлэг олгох · Explain</span><span class="min">20–23 мин</span></div>
+  <h2 class="st">Гурван эгэл хэсэг</h2>
+  <div class="tscroll" style="border:1.5px solid var(--rule);border-radius:var(--r);overflow:hidden">
+    <table class="data">
+      <thead><tr><th>Жижиг хэсэг</th><th>Байрлал</th><th>Харьцангуй цэнэг</th><th>Харьцангуй масс</th></tr></thead>
+      <tbody>
+        <tr><td><span class="chip c-p"><span class="mk">+</span>протон</span></td><td>цөмд</td><td class="num">+1</td><td class="num">1</td></tr>
+        <tr><td><span class="chip c-n"><span class="mk">0</span>нейтрон</span></td><td>цөмд</td><td class="num">0</td><td class="num">1</td></tr>
+        <tr><td><span class="chip c-e"><span class="mk">−</span>электрон</span></td><td>цөмийн тойрог замд</td><td class="num">−1</td><td class="num">1/1840 ≈ 0</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="cols c2">
+    <p class="lede"><b>Яагаад «харьцангуй» вэ?</b> Бодит цэнэг, масс нь маш бага тоо. Ижил нэгжтэй хоёр зүйлийг харьцуулсан тул <b>харьцангуй хэмжигдэхүүн нэгжгүй</b> — грамм ч биш, кулон ч биш.</p>
+    <p class="lede"><b>Яагаад атом саармаг вэ?</b> Протоны тоо = электроны тоо, цэнэг нь хэмжээгээрээ ижил, тэмдгээрээ эсрэг. Нийлбэр нь <b>тэг</b>.</p>
+  </div>
+  <p class="note"><b>Ажлын хуудас, Даалгавар 2:</b> хүснэгтийг нөхөж, хосынхоо хуудастай тулгаж шалгаарай.</p>
+</section>
+
+<section class="slide" data-t="1/1840">
+  <div class="eyebrow"><span class="phase">Шинэ мэдлэг олгох · Explain</span><span class="min">20–23 мин</span></div>
+  <h2 class="st">Яагаад электроны массыг тооцдоггүй вэ?</h2>
+  <div data-w="mass"></div>
+</section>
+
+<section class="slide" data-t="Хоосон зай">
+  <div class="eyebrow"><span class="phase">Шинэ мэдлэг олгох · Explain</span><span class="min">20–23 мин</span></div>
+  <h2 class="st">Атомын дотор бараг бүгд хоосон</h2>
+  <div data-w="zoom"></div>
+</section>
+
+<section class="slide" data-t="Тэмдэглэгээ">
+  <div class="eyebrow"><span class="phase">Бататгах · Elaborate</span><span class="min">23–26 мин</span></div>
+  <h2 class="st">Атомыг гурван тоогоор бичнэ</h2>
+  <div class="cols c2" style="align-items:center">
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <span class="nota" style="font-size:clamp(34px,6.5vw,72px)"><span class="stack"><span class="A">7</span><span class="Z">3</span></span>Li<span class="post N">4</span></span>
+      <div class="legend" style="flex-direction:column;gap:6px">
+        <span><b style="color:var(--gold)">A = 7</b> — массын тоо (зүүн дээд)</span>
+        <span><b style="color:var(--proton)">Z = 3</b> — протоны тоо (зүүн доод)</span>
+        <span><b style="color:var(--neutron)">N = 4</b> — нейтроны тоо (баруун доод)</span>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Хамтдаа бодъё — лити</h3>
+      <ul class="plain">
+        <li>Үелэх хүснэгт дэх дэс дугаар = <b>протоны тоо Z = 3</b></li>
+        <li>Цахилгаан саармаг тул <b>электрон = 3</b></li>
+        <li>Массын тоо <b>A = 7</b></li>
+        <li><b>N = A − Z = 7 − 3 = 4</b> нейтрон</li>
+      </ul>
+      <hr class="rule">
+      <p class="lede" style="font-family:var(--f-mono);text-align:center">A = Z + N&nbsp; → &nbsp;N = A − Z</p>
+    </div>
+  </div>
+  <p class="note"><b>Анхаар:</b> Z нь үелэх хүснэгтийн дэс дугаар, A нь массын тоо. Хоёр нь өөр тоо — зөрүү нь яг нейтроны тоо.</p>
+</section>
+
+<section class="slide" data-t="Атом угсрах">
+  <div class="eyebrow"><span class="phase">Бататгах · Elaborate</span><span class="min">26–33 мин</span></div>
+  <h2 class="st">Атомаа угсраарай</h2>
+  <div data-w="builder"></div>
+  <p class="note"><b>Ажлын хуудас, Даалгавар 3:</b> дэлгэц дээрх тоог хүснэгтэд буулгаарай. Протоны тоог өөрчлөхөд элементийн нэр юу болж байгааг ажигла.</p>
+</section>
+
+<section class="slide" data-t="PhET, нэр томьёо">
+  <div class="eyebrow"><span class="phase">Бататгах · Elaborate</span><span class="min">26–33 мин</span></div>
+  <h2 class="st">PhET симуляц ба нэр томьёо</h2>
+  <p class="lede">Симуляцын хэл англи. Товчлууруудыг дараах толиор таниарай.</p>
+  <div class="gloss">
+    <div class="glc"><div class="en">Proton</div><div class="mn">Протон</div></div>
+    <div class="glc"><div class="en">Neutron</div><div class="mn">Нейтрон</div></div>
+    <div class="glc"><div class="en">Electron</div><div class="mn">Электрон</div></div>
+    <div class="glc"><div class="en">Nucleus</div><div class="mn">Цөм</div></div>
+    <div class="glc"><div class="en">Mass Number</div><div class="mn">Массын тоо (A)</div></div>
+    <div class="glc"><div class="en">Net Charge</div><div class="mn">Нийлбэр цэнэг</div></div>
+    <div class="glc"><div class="en">Element Name</div><div class="mn">Элементийн нэр</div></div>
+    <div class="glc"><div class="en">Stable / Unstable</div><div class="mn">Тогтвортой / тогтворгүй</div></div>
+    <div class="glc"><div class="en">Alpha Particle</div><div class="mn">Альфа туяа</div></div>
+    <div class="glc"><div class="en">Gold Foil</div><div class="mn">Алтны нимгэн ялтас</div></div>
+    <div class="glc"><div class="en">Plum Pudding</div><div class="mn">Үзэмтэй талхан загвар</div></div>
+    <div class="glc"><div class="en">Symbol</div><div class="mn">Химийн тэмдэг</div></div>
+  </div>
+  <div class="linkrow">
+    <a href="https://phet.colorado.edu/sims/html/build-an-atom/latest/build-an-atom_en.html" target="_blank" rel="noopener">PhET · Build an Atom</a>
+    <a href="https://phet.colorado.edu/sims/html/rutherford-scattering/latest/rutherford-scattering_en.html" target="_blank" rel="noopener">PhET · Rutherford Scattering</a>
+  </div>
+  <p class="note">Хосоороо ажиллана: нэг нь симуляцыг удирдана, нөгөө нь хүснэгтээ бөглөнө. 3 минут тутамд үүргээ солиорой.</p>
+</section>
+
+<section class="slide" data-t="Дасгал тоглоом">
+  <div class="eyebrow"><span class="phase">Үнэлэх, дүгнэх</span><span class="min">33–38 мин</span></div>
+  <h2 class="st">Хамтдаа шалгая</h2>
+  <div data-w="quiz"></div>
+</section>
+
+<section class="slide" data-t="Дүгнэлт">
+  <div class="eyebrow"><span class="phase">Үнэлэх, дүгнэх · Гэрийн даалгавар</span><span class="min">33–40 мин</span></div>
+  <h2 class="st">Хайрцаг руугаа эргэж оръё</h2>
+  <p class="lede big">Резерфорд хайрцгийг нээгээгүй. Тэр зүгээр л дотогш нь <b>юм шидээд</b>, хэрхэн буцаж ирснийг нь ажигласан. Шинжлэх ухаан ингэж ажилладаг.</p>
+  <hr class="rule">
+  <div class="cols c2">
+    <div class="card">
+      <h3>Өнөөдөр бид юу мэдсэн бэ</h3>
+      <ul class="plain">
+        <li>Атомын төвд <b>цөм</b> — протон ба нейтрон.</li>
+        <li>Цөмийг тойрон <b>электрон</b>.</li>
+        <li>Атом <b>саармаг</b>: протон = электрон.</li>
+        <li>Масс ≈ протон + нейтрон = <b>A</b>.</li>
+        <li><b>N = A − Z</b>.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Гарах тасалбар ба гэрийн даалгавар</h3>
+      <ul class="plain">
+        <li>Гарах тасалбар: <b>5 асуулт, 12 оноо, 5 минут</b>.</li>
+        <li>Гэрийн даалгавар: сурах бичиг <b>х. 41 Дасгал 2</b>, <b>х. 44 Асуулт 1–5</b>.</li>
+        <li>Дараагийн хичээл: <b>электроны хуваарилалт</b> — 2, 8, 8 давхраа (Н.Бор, 1913).</li>
+      </ul>
+      <p class="note">Гэртээ давтахдаа сурагчийн хуудсыг утсаараа нээж, симуляцуудыг дахин ажиллуулж болно.</p>
+    </div>
+  </div>
+</section>
+
+<div class="bar">
+  <button class="nb" id="prev" aria-label="Өмнөх слайд">←</button>
+  <div class="dots" id="dots" role="tablist" aria-label="Слайдууд"></div>
+  <span class="count" id="count"></span>
+  <button class="nb" id="full" aria-label="Бүтэн дэлгэц">⛶</button>
+  <button class="nb" id="next" aria-label="Дараагийн слайд">→</button>
+</div>
+</div>
+<p class="pagefoot">EDUC201 · Хими VIII, 2.1 Атомын бүтэц · <a href="index.html">Сурагчийн хуудас →</a></p>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+/* ══════════════════════════════════════════════════════════════
+   Атомын бүтэц — интерактив симуляцууд
+   Хими VIII, 2.1 · Эрдэнэбат С. · EDUC201
+   Widget бүр <div data-w="нэр"> дотор өөрийн markup-аа үүсгэнэ.
+   ══════════════════════════════════════════════════════════════ */
+(function(){
+"use strict";
+
+var ELN = ['','Устөрөгч','Гели','Лити','Берилли','Бор','Нүүрстөрөгч','Азот','Хүчилтөрөгч',
+           'Фтор','Неон','Натри','Магни','Хөнгөнцагаан','Цахиур','Фосфор','Хүхэр','Хлор',
+           'Аргон','Кали','Кальци'];
+var ELS = ['','H','He','Li','Be','B','C','N','O','F','Ne','Na','Mg','Al','Si','P','S','Cl','Ar','K','Ca'];
+
+function cssv(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim() || '#888'; }
+function ri(a,b){ return a + Math.floor(Math.random()*(b-a+1)); }
+function shuffle(a){ for (var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+function nota(A,Z,N,sym){
+  return '<span class="nota"><span class="stack"><span class="A">'+A+'</span><span class="Z">'+Z+
+         '</span></span>'+sym+'<span class="post N">'+N+'</span></span>';
+}
+
+/* ─────────────────────────────────────────────────────────────
+   1. РЕЗЕРФОРДЫН САРНИЛТ
+   ───────────────────────────────────────────────────────────── */
+function wScatter(root){
+  root.classList.add('w');
+  root.innerHTML =
+   '<div class="w-head"><h3>Резерфордын алтан ялтасны туршилт</h3><span class="tag">Симуляц 1</span></div>'+
+   '<p class="w-hint">Алтны маш нимгэн ялтас руу эерэг цэнэгтэй <b>альфа туяа</b> буудна. Хоёр загварыг сольж үзээд, юу өөр болохыг ажиглаарай.</p>'+
+   '<div class="cvwrap ratio-wide"><canvas></canvas></div>'+
+   '<div class="w-ctl">'+
+     '<div class="seg" role="group" aria-label="Загвар сонгох">'+
+       '<button data-m="thomson" aria-pressed="true">Томсоны загвар</button>'+
+       '<button data-m="rutherford" aria-pressed="false">Резерфордын загвар</button></div>'+
+     '<button class="btn btn-go" data-a="play">Зогсоох</button>'+
+     '<button class="btn" data-a="one">1 туяа буудах</button>'+
+     '<button class="btn" data-a="clear">Цэвэрлэх</button>'+
+     '<label>Удаан <input type="range" min="20" max="140" value="100" aria-label="Хурд"> Хурдан</label>'+
+   '</div>'+
+   '<div class="stats">'+
+     '<span class="stat n-" data-s="a">Шулуун нэвтэрсэн 0</span>'+
+     '<span class="stat g-" data-s="b">Хазайж сарнисан 0</span>'+
+     '<span class="stat p-" data-s="c">Буцаж ойсон 0</span>'+
+     '<span class="stat" data-s="t">Нийт 0</span>'+
+   '</div>'+
+   '<details class="reveal"><summary style="list-style:none"></summary></details>';
+
+  /* reveal built manually for wider browser support */
+  var rev = root.querySelector('.reveal'); rev.innerHTML = '';
+  var rb = document.createElement('button');
+  rb.type = 'button'; rb.textContent = 'Юу ажиглав? — хариултыг харах';
+  var rbody = document.createElement('div'); rbody.className = 'body'; rbody.hidden = true;
+  rbody.innerHTML = '<p><b>Томсоны загварт</b> бүх туяа бараг шулуун нэвтэрнэ — эерэг цэнэг бүх эзлэхүүнд '+
+    'жигд тархсан тул хүчтэй түлхэлт үүсэхгүй.</p><p style="margin-top:6px"><b>Резерфордын загварт</b> ихэнх нь '+
+    'шулуун нэвтэрч, цөөн хэсэг нь хазайж, маш цөөн хэсэг нь буцаж ойно. Учир нь эерэг цэнэг бүхэлдээ '+
+    'төвийн маш жижиг <b>цөмд</b> төвлөрсөн байдаг.</p>';
+  rb.addEventListener('click', function(){ rbody.hidden = !rbody.hidden; rb.textContent = rbody.hidden ? 'Юу ажиглав? — хариултыг харах' : 'Хариултыг нуух'; rev.classList.toggle('open'); });
+  rev.replaceWith((function(){ var d=document.createElement('div'); d.className='reveal'; d.appendChild(rb); d.appendChild(rbody); return d; })());
+
+  var cv = root.querySelector('canvas'), ctx = cv.getContext('2d');
+  var mode = 'thomson', running = true, parts = [], tally = {a:0,b:0,c:0};
+  var W=0,H=0,R=0,CX=0,CY=0,K=0,V0=0, speed = 1;
+
+  function resize(){
+    var rect = cv.getBoundingClientRect();
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = Math.max(280, rect.width); H = Math.max(160, rect.height);
+    cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    CX = W*0.5; CY = H*0.5; R = Math.min(W*0.27, H*0.42);
+    V0 = Math.max(170, W*0.36);
+    /* Резерфордын томьёо: tan(theta/2) = K / (b * V0^2).
+       K = 0.024*R*V0^2 => ~73% шулуун, ~25% сарнисан, ~2% буцаж ойсон —
+       сурах бичгийн «ихэнх нь нэвтэрч, маш цөөн нь ойсон» дүр зурагтай тохирно. */
+    K  = 0.024 * R * V0 * V0;
+  }
+  function spawn(b){
+    if (b === undefined) b = (Math.random()*2-1) * R;
+    parts.push({x:-8, y:CY+b, vx:V0, vy:0, tr:[[-8, CY+b]], done:false});
+  }
+  function step(dt){
+    for (var i=parts.length-1;i>=0;i--){
+      var p = parts[i], dx = p.x-CX, dy = p.y-CY;
+      var r2 = dx*dx+dy*dy, r = Math.sqrt(r2)||0.001, ax=0, ay=0, f;
+      if (mode === 'rutherford'){ f = K/(r2*r); ax=f*dx; ay=f*dy; }
+      else if (r < R){ f = K/(R*R*R); ax=f*dx; ay=f*dy; }
+      else { f = K/(r2*r); ax=f*dx; ay=f*dy; }
+      p.vx += ax*dt; p.vy += ay*dt; p.x += p.vx*dt; p.y += p.vy*dt;
+      var L = p.tr[p.tr.length-1];
+      if (Math.abs(p.x-L[0])+Math.abs(p.y-L[1]) > 3){ p.tr.push([p.x,p.y]); if (p.tr.length>240) p.tr.shift(); }
+      if (!p.done && (p.x>W+25 || p.x<-35 || p.y<-35 || p.y>H+35)){
+        p.done = true;
+        var an = Math.abs(Math.atan2(p.vy,p.vx))*180/Math.PI;
+        if (an < 10) tally.a++; else if (an < 90) tally.b++; else tally.c++;
+        upd();
+      }
+      if (p.x>W+260 || p.x<-260 || p.y<-260 || p.y>H+260) parts.splice(i,1);
+    }
+  }
+  function draw(){
+    var paper=cssv('--surface'), rule=cssv('--rule'), gold=cssv('--gold'),
+        gbg=cssv('--gold-bg'), proton=cssv('--proton'), ink3=cssv('--ink-3');
+    ctx.clearRect(0,0,W,H); ctx.fillStyle = paper; ctx.fillRect(0,0,W,H);
+    ctx.fillStyle = gbg; ctx.fillRect(CX-R*0.16, 0, R*0.32, H);
+    ctx.strokeStyle = gold; ctx.lineWidth = 1.2; ctx.globalAlpha = .45;
+    ctx.beginPath(); ctx.moveTo(CX-R*0.16,0); ctx.lineTo(CX-R*0.16,H);
+    ctx.moveTo(CX+R*0.16,0); ctx.lineTo(CX+R*0.16,H); ctx.stroke(); ctx.globalAlpha = 1;
+
+    ctx.setLineDash([3,5]); ctx.strokeStyle = rule; ctx.lineWidth = 1.4;
+    ctx.beginPath(); ctx.arc(CX,CY,R,0,Math.PI*2); ctx.stroke(); ctx.setLineDash([]);
+    if (mode === 'thomson'){
+      var g = ctx.createRadialGradient(CX,CY,0,CX,CY,R);
+      g.addColorStop(0, proton); g.addColorStop(1, paper);
+      ctx.globalAlpha = .26; ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(CX,CY,R,0,Math.PI*2); ctx.fill(); ctx.globalAlpha = 1;
+    } else {
+      ctx.fillStyle = proton; ctx.globalAlpha = .16;
+      ctx.beginPath(); ctx.arc(CX,CY,Math.max(9,R*0.14),0,Math.PI*2); ctx.fill(); ctx.globalAlpha = 1;
+      ctx.beginPath(); ctx.arc(CX,CY,Math.max(3.5,R*0.055),0,Math.PI*2); ctx.fill();
+    }
+    ctx.lineWidth = 1.7;
+    for (var i=0;i<parts.length;i++){
+      var p = parts[i], an = Math.abs(Math.atan2(p.vy,p.vx))*180/Math.PI;
+      var c = an < 10 ? ink3 : (an < 90 ? gold : proton);
+      ctx.strokeStyle = c; ctx.globalAlpha = an < 10 ? .55 : 1;
+      ctx.beginPath();
+      for (var k=0;k<p.tr.length;k++){ k ? ctx.lineTo(p.tr[k][0],p.tr[k][1]) : ctx.moveTo(p.tr[k][0],p.tr[k][1]); }
+      ctx.lineTo(p.x,p.y); ctx.stroke(); ctx.globalAlpha = 1;
+      ctx.fillStyle = c; ctx.beginPath(); ctx.arc(p.x,p.y,2.8,0,Math.PI*2); ctx.fill();
+    }
+    ctx.font = '600 12px "PT Mono", monospace'; ctx.textAlign = 'left';
+    ctx.fillStyle = ink3; ctx.fillText('альфа туяа →', 9, 18);
+    ctx.textAlign = 'center'; ctx.fillStyle = gold;
+    ctx.fillText(mode === 'thomson' ? 'эерэг цэнэг жигд тархсан' : 'эерэг цэнэг цөмд төвлөрсөн', CX, H-9);
+  }
+  function upd(){
+    var t = tally.a+tally.b+tally.c;
+    function pc(n){ return t ? ' (' + Math.round(n/t*100) + '%)' : ''; }
+    root.querySelector('[data-s="a"]').textContent = 'Шулуун нэвтэрсэн ' + tally.a + pc(tally.a);
+    root.querySelector('[data-s="b"]').textContent = 'Хазайж сарнисан ' + tally.b + pc(tally.b);
+    root.querySelector('[data-s="c"]').textContent = 'Буцаж ойсон ' + tally.c + pc(tally.c);
+    root.querySelector('[data-s="t"]').textContent = 'Нийт ' + t;
+  }
+  var last = 0, acc = 0;
+  function loop(t){
+    if (!last) last = t;
+    var dt = Math.min((t-last)/1000, 1/30) * speed; last = t;
+    if (running){ acc += dt; if (acc > 0.16 && parts.length < 80){ acc = 0; spawn(); } }
+    step(dt); draw(); requestAnimationFrame(loop);
+  }
+  function clear(){ parts = []; tally = {a:0,b:0,c:0}; upd(); }
+  Array.prototype.forEach.call(root.querySelectorAll('.seg button'), function(b){
+    b.addEventListener('click', function(){
+      mode = b.dataset.m;
+      Array.prototype.forEach.call(root.querySelectorAll('.seg button'), function(o){
+        o.setAttribute('aria-pressed', String(o === b));
+      });
+      clear();
+    });
+  });
+  var playBtn = root.querySelector('[data-a="play"]');
+  playBtn.addEventListener('click', function(){
+    running = !running;
+    playBtn.textContent = running ? 'Зогсоох' : 'Үргэлжлүүлэх';
+    playBtn.classList.toggle('btn-go', running);
+  });
+  root.querySelector('[data-a="one"]').addEventListener('click', function(){
+    running = false; playBtn.textContent = 'Үргэлжлүүлэх'; playBtn.classList.remove('btn-go');
+    spawn((Math.random()*2-1) * R * 0.35);
+  });
+  root.querySelector('[data-a="clear"]').addEventListener('click', clear);
+  root.querySelector('input[type=range]').addEventListener('input', function(e){ speed = e.target.value/100; });
+  window.addEventListener('resize', resize);
+  resize(); upd(); requestAnimationFrame(loop);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   2. ХААНА БАЙРЛАХ ВЭ? (байрлуулах тоглоом)
+   ───────────────────────────────────────────────────────────── */
+function wPlace(root){
+  root.classList.add('w');
+  root.innerHTML =
+   '<div class="w-head"><h3>Хаана байрладаг вэ?</h3><span class="tag">Симуляц 2</span></div>'+
+   '<p class="w-hint">Гарч ирсэн эгэл хэсэг бүрийг зөв байрлалд нь тавиарай.</p>'+
+   '<div class="token"><div class="ball" data-t="ball"></div><div class="tn" data-t="name"></div>'+
+     '<div class="w-hint" data-t="sub"></div></div>'+
+   '<div class="zones">'+
+     '<button class="zone" data-z="nuc"><div class="zt">Цөмд</div><div class="zs">атомын яг төвд</div></button>'+
+     '<button class="zone" data-z="orb"><div class="zt">Тойрог замд</div><div class="zs">цөмийг тойрон</div></button>'+
+   '</div>'+
+   '<div class="fb" data-t="fb" hidden></div>'+
+   '<div class="w-ctl"><div class="bar-track" style="flex:1;min-width:120px"><div class="bar-fill" data-t="bar" style="width:0%"></div></div>'+
+     '<span class="stat" data-t="score">0 / 6</span>'+
+     '<button class="btn btn-sm" data-t="again" hidden>Дахин тоглох</button></div>';
+
+  var Q = [
+    {k:'p', n:'Протон', s:'харьцангуй цэнэг +1, масс 1', z:'nuc', c:'--proton', m:'+'},
+    {k:'n', n:'Нейтрон', s:'цэнэггүй (0), масс 1', z:'nuc', c:'--neutron', m:'0'},
+    {k:'e', n:'Электрон', s:'харьцангуй цэнэг −1, масс 1/1840', z:'orb', c:'--electron', m:'−'},
+    {k:'e', n:'Электрон', s:'атомын хамгийн хөнгөн хэсэг', z:'orb', c:'--electron', m:'−'},
+    {k:'p', n:'Протон', s:'элементийн дэс дугаарыг тодорхойлдог', z:'nuc', c:'--proton', m:'+'},
+    {k:'n', n:'Нейтрон', s:'массын тоонд ордог ч цэнэггүй', z:'nuc', c:'--neutron', m:'0'}
+  ];
+  var order = [], idx = 0, score = 0, locked = false;
+  var ball = root.querySelector('[data-t="ball"]'), nm = root.querySelector('[data-t="name"]'),
+      sub = root.querySelector('[data-t="sub"]'), fb = root.querySelector('[data-t="fb"]'),
+      bar = root.querySelector('[data-t="bar"]'), sc = root.querySelector('[data-t="score"]'),
+      again = root.querySelector('[data-t="again"]');
+
+  function show(){
+    if (idx >= order.length){
+      ball.style.background = cssv('--gold'); ball.textContent = '★';
+      nm.textContent = score === 6 ? 'Бүгд зөв!' : score + ' / 6 зөв';
+      sub.textContent = score >= 5 ? 'Маш сайн — эгэл хэсгүүдийн байрлалыг сайн мэдэж байна.'
+                                   : 'Дахин үзээрэй: протон ба нейтрон цөмд, электрон тойрог замд.';
+      Array.prototype.forEach.call(root.querySelectorAll('.zone'), function(z){ z.disabled = true; });
+      again.hidden = false; return;
+    }
+    var q = order[idx];
+    ball.style.background = cssv(q.c); ball.textContent = q.m;
+    nm.textContent = q.n; sub.textContent = q.s;
+    fb.hidden = true; locked = false;
+    Array.prototype.forEach.call(root.querySelectorAll('.zone'), function(z){ z.disabled = false; });
+  }
+  function pick(z){
+    if (locked || idx >= order.length) return;
+    locked = true;
+    var q = order[idx], good = (z === q.z);
+    if (good) score++;
+    fb.hidden = false;
+    fb.className = 'fb ' + (good ? 'good' : 'bad');
+    fb.textContent = good
+      ? 'Зөв! ' + q.n + ' нь ' + (q.z === 'nuc' ? 'цөмд' : 'цөмийг тойрон тойрог замд') + ' байрладаг.'
+      : 'Дахин бод: ' + q.n + ' нь ' + (q.z === 'nuc' ? 'ЦӨМД' : 'ТОЙРОГ ЗАМД') + ' байрладаг.';
+    sc.textContent = score + ' / 6';
+    bar.style.width = Math.round((idx+1)/6*100) + '%';
+    idx++;
+    setTimeout(show, 1100);
+  }
+  Array.prototype.forEach.call(root.querySelectorAll('.zone'), function(z){
+    z.addEventListener('click', function(){ pick(z.dataset.z); });
+  });
+  function start(){ order = shuffle(Q.slice()); idx = 0; score = 0;
+    sc.textContent = '0 / 6'; bar.style.width = '0%'; again.hidden = true; show(); }
+  again.addEventListener('click', start);
+  start();
+}
+
+/* ─────────────────────────────────────────────────────────────
+   3. 1 ПРОТОН = 1840 ЭЛЕКТРОН
+   ───────────────────────────────────────────────────────────── */
+function wMass(root){
+  root.classList.add('w');
+  root.innerHTML =
+   '<div class="w-head"><h3>Яагаад электроны массыг тооцдоггүй вэ?</h3><span class="tag">Симуляц 3</span></div>'+
+   '<p class="w-hint">Нэг протоны масстай тэнцэхийн тулд хэдэн электрон хэрэгтэйг харцгаая.</p>'+
+   '<div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">'+
+     '<div style="flex:0 0 auto;text-align:center">'+
+       '<div style="width:74px;height:74px;border-radius:50%;background:var(--proton);display:grid;'+
+         'place-items:center;color:#fff;font-family:var(--f-mono);font-size:27px;font-weight:700">1</div>'+
+       '<div class="w-hint" style="margin-top:5px;font-size:13px">протон</div></div>'+
+     '<div style="font-family:var(--f-mono);font-size:26px;color:var(--ink-3)">=</div>'+
+     '<div style="flex:1 1 220px;min-width:0">'+
+       '<div data-t="dots" style="display:flex;flex-wrap:wrap;gap:1px;align-content:flex-start;'+
+         'height:clamp(96px,16vw,150px);overflow:hidden;border:1.5px solid var(--rule-soft);'+
+         'border-radius:8px;padding:6px;background:var(--surface)"></div>'+
+       '<div class="w-hint" style="margin-top:5px;font-size:13px">электрон</div></div>'+
+   '</div>'+
+   '<div class="w-ctl"><button class="btn btn-go" data-t="go">1840 электроныг дүүргэх</button>'+
+     '<span class="stat" data-t="n">0 / 1840</span></div>'+
+   '<p class="w-hint"><b>Дүгнэлт:</b> электрон протоноос 1840 дахин хөнгөн тул атомын массыг зөвхөн '+
+     '<b>протон + нейтрон</b>-оор тооцдог. Үүнийг <b>массын тоо (A)</b> гэнэ.</p>';
+
+  var box = root.querySelector('[data-t="dots"]'), n = root.querySelector('[data-t="n"]');
+  for (var i=0;i<1840;i++){
+    var d = document.createElement('i');
+    d.style.cssText = 'width:3px;height:3px;border-radius:50%;background:var(--electron);opacity:0';
+    box.appendChild(d);
+  }
+  var timer = null;
+  root.querySelector('[data-t="go"]').addEventListener('click', function(){
+    if (timer){ clearInterval(timer); timer = null; }
+    var kids = box.children, c = 0;
+    for (var j=0;j<kids.length;j++) kids[j].style.opacity = 0;
+    timer = setInterval(function(){
+      for (var s=0;s<30 && c<1840;s++,c++) kids[c].style.opacity = 1;
+      n.textContent = c + ' / 1840';
+      if (c >= 1840){ clearInterval(timer); timer = null; }
+    }, 16);
+  });
+}
+
+/* ─────────────────────────────────────────────────────────────
+   4. АТОМ ХЭР ХООСОН ВЭ? (масштаб)
+   ───────────────────────────────────────────────────────────── */
+function wZoom(root){
+  root.classList.add('w');
+  root.innerHTML =
+   '<div class="w-head"><h3>Атом хэр их хоосон зайтай вэ?</h3><span class="tag">Симуляц 4</span></div>'+
+   '<p class="w-hint">Гулсуурыг чирээд атом руу ойртоно уу. Цөм хэзээ харагдаж эхлэхийг ажиглаарай.</p>'+
+   '<div class="cvwrap ratio-sq"><canvas></canvas></div>'+
+   '<div class="w-ctl"><label style="flex:1;min-width:190px">Томруулах '+
+     '<input type="range" min="0" max="400" value="0" style="width:100%" aria-label="Томруулалт"></label>'+
+     '<span class="stat g-" data-t="z">1×</span></div>'+
+   '<p class="w-hint" data-t="msg"></p>';
+
+  var cv = root.querySelector('canvas'), ctx = cv.getContext('2d');
+  var W=0,H=0, zoom = 1;
+  var ATOM_M = 1e-10, NUC_M = 1e-14;      /* диаметр, метр */
+  function resize(){
+    var r = cv.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio||1, 2);
+    W = Math.max(240, r.width); H = Math.max(200, r.height);
+    cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0); draw();
+  }
+  function fmt(m){
+    if (m >= 1e-9) return (m*1e9).toFixed(m*1e9 < 10 ? 2 : 1) + ' нм';
+    if (m >= 1e-12) return (m*1e12).toFixed(m*1e12 < 10 ? 2 : 1) + ' пм';
+    return (m*1e15).toFixed(m*1e15 < 10 ? 2 : 1) + ' фм';
+  }
+  function draw(){
+    var surface=cssv('--surface'), rule=cssv('--rule'), proton=cssv('--proton'),
+        electron=cssv('--electron'), ink3=cssv('--ink-3'), gold=cssv('--gold');
+    ctx.clearRect(0,0,W,H); ctx.fillStyle = surface; ctx.fillRect(0,0,W,H);
+    var cx = W/2, cy = H/2;
+    var viewM = (ATOM_M*1.5) / zoom;           /* дэлгэцийн бодит өргөн */
+    var pxm = W / viewM;
+    var aR = ATOM_M/2 * pxm, nR = NUC_M/2 * pxm;
+
+    ctx.setLineDash([4,6]); ctx.strokeStyle = rule; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(cx, cy, aR, 0, Math.PI*2); ctx.stroke(); ctx.setLineDash([]);
+    if (aR < Math.max(W,H)){
+      ctx.fillStyle = electron;
+      for (var i=0;i<6;i++){
+        var a = i/6*Math.PI*2 + 0.4;
+        ctx.beginPath(); ctx.arc(cx+aR*Math.cos(a), cy+aR*Math.sin(a), Math.max(2.5, 5/Math.sqrt(zoom)), 0, Math.PI*2); ctx.fill();
+      }
+    }
+    if (nR > 0.35){
+      ctx.fillStyle = proton; ctx.globalAlpha = .18;
+      ctx.beginPath(); ctx.arc(cx,cy,Math.max(nR*2.4, 7),0,Math.PI*2); ctx.fill(); ctx.globalAlpha = 1;
+      ctx.beginPath(); ctx.arc(cx,cy,nR,0,Math.PI*2); ctx.fill();
+    } else {
+      ctx.strokeStyle = proton; ctx.lineWidth = 1.4;
+      ctx.beginPath(); ctx.moveTo(cx-7,cy); ctx.lineTo(cx+7,cy);
+      ctx.moveTo(cx,cy-7); ctx.lineTo(cx,cy+7); ctx.stroke();
+      ctx.font = '600 11px "PT Mono", monospace'; ctx.textAlign='center'; ctx.fillStyle = proton;
+      ctx.fillText('цөм энд байгаа ч харагдахгүй', cx, cy+24);
+    }
+    /* масштабын шугам */
+    var barPx = W*0.3, barM = barPx / pxm;
+    ctx.strokeStyle = ink3; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(14, H-20); ctx.lineTo(14+barPx, H-20);
+    ctx.moveTo(14,H-25); ctx.lineTo(14,H-15); ctx.moveTo(14+barPx,H-25); ctx.lineTo(14+barPx,H-15); ctx.stroke();
+    ctx.font = '600 11px "PT Mono", monospace'; ctx.textAlign = 'left'; ctx.fillStyle = ink3;
+    ctx.fillText(fmt(barM), 14, H-27);
+    ctx.textAlign = 'right'; ctx.fillStyle = gold;
+    ctx.fillText(Math.round(zoom) + '× томруулсан', W-12, 20);
+  }
+  var msg = root.querySelector('[data-t="msg"]'), zl = root.querySelector('[data-t="z"]');
+  function tell(){
+    var t;
+    if (zoom < 5) t = 'Энэ бол бүтэн атом (диаметр ≈ 0.1 нм). Цөм хаана байна? Харагдахгүй байна — хэтэрхий жижиг.';
+    else if (zoom < 60) t = 'Атомын ирмэг дэлгэцнээс гарлаа. Гэхдээ төв хэсэгт юу ч харагдахгүй хэвээр — дан хоосон зай.';
+    else if (zoom < 600) t = 'Одоо л цөм цэг болж дөнгөж мэдэгдэж эхэллээ. Атомын дотор ийм их зай хоосон байдаг.';
+    else if (zoom < 3000) t = 'Цөм харагдаж байна. Эргэн тойрны бүх зай хоосон — электронууд хэдийн дэлгэцнээс гарсан.';
+    else t = 'Цөм атомаас 10 000 дахин жижиг. Атомыг 100 метрийн хөлбөмбөгийн талбай болгож томруулбал, цөм нь талбайн голд тавьсан 1 см-ийн шилэн бөмбөлөг болно.';
+    msg.innerHTML = t;
+    zl.textContent = Math.round(zoom) + '×';
+  }
+  root.querySelector('input[type=range]').addEventListener('input', function(e){
+    zoom = Math.pow(10, e.target.value/100);      /* 1 → 10 000 */
+    draw(); tell();
+  });
+  window.addEventListener('resize', resize);
+  resize(); tell();
+}
+
+/* ─────────────────────────────────────────────────────────────
+   5. АТОМ УГСРАХ
+   ───────────────────────────────────────────────────────────── */
+function wBuilder(root){
+  root.classList.add('w');
+  root.innerHTML =
+   '<div class="w-head"><h3>Атомаа угсраарай</h3><span class="tag">Симуляц 5</span></div>'+
+   '<p class="w-hint">Эгэл хэсгийн тоог өөрчилж, элементийн нэр, массын тоо, цэнэг хэрхэн өөрчлөгдөхийг ажиглаарай.</p>'+
+   '<div class="bld">'+
+     '<svg viewBox="0 0 300 270" data-t="svg" style="width:100%;height:auto;display:block;'+
+       'background:var(--surface);border:1.5px solid var(--rule-soft);border-radius:8px"></svg>'+
+     '<div style="display:flex;flex-direction:column;gap:9px;min-width:0">'+
+       '<div style="display:flex;flex-direction:column;gap:7px">'+
+         '<div class="ctr p"><span class="lbl">Протон</span><button data-k="p" data-d="-1" aria-label="Протон хасах">−</button><span class="val" data-v="p">3</span><button data-k="p" data-d="1" aria-label="Протон нэмэх">+</button></div>'+
+         '<div class="ctr n"><span class="lbl">Нейтрон</span><button data-k="n" data-d="-1" aria-label="Нейтрон хасах">−</button><span class="val" data-v="n">4</span><button data-k="n" data-d="1" aria-label="Нейтрон нэмэх">+</button></div>'+
+         '<div class="ctr e"><span class="lbl">Электрон</span><button data-k="e" data-d="-1" aria-label="Электрон хасах">−</button><span class="val" data-v="e">3</span><button data-k="e" data-d="1" aria-label="Электрон нэмэх">+</button></div>'+
+       '</div>'+
+       '<div class="ro-grid">'+
+         '<div class="ro"><div class="k">Элемент</div><div class="v" data-v="el">Лити</div></div>'+
+         '<div class="ro"><div class="k">Массын тоо A</div><div class="v" data-v="A">7</div></div>'+
+         '<div class="ro"><div class="k">Нийлбэр цэнэг</div><div class="v" data-v="q">0</div></div>'+
+         '<div class="ro"><div class="k">Тэмдэглэгээ</div><div class="v" data-v="not" style="font-size:clamp(17px,2.2vw,24px)"></div></div>'+
+       '</div>'+
+       '<div class="status ok" data-v="stat">Цахилгаан саармаг атом</div>'+
+       '<div class="w-ctl">'+
+         '<button class="btn btn-sm" data-set="3,4,3">Лити</button>'+
+         '<button class="btn btn-sm" data-set="6,6,6">Нүүрстөрөгч</button>'+
+         '<button class="btn btn-sm" data-set="11,12,11">Натри</button>'+
+         '<button class="btn btn-sm" data-set="20,20,20">Кальци</button>'+
+       '</div>'+
+     '</div>'+
+   '</div>';
+
+  var st = {p:3, n:4, e:3};
+  function shells(n){ var caps=[2,8,8,2], o=[]; for (var i=0;i<caps.length&&n>0;i++){ var k=Math.min(caps[i],n); o.push(k); n-=k; } return o; }
+  function atom(){
+    var cx=150, cy=118, out=[], sh=shells(st.e), maxR=104;
+    for (var s=0;s<sh.length;s++){
+      var rr = 36 + (s+1)*((maxR-36)/Math.max(sh.length,1));
+      out.push('<circle cx="'+cx+'" cy="'+cy+'" r="'+rr.toFixed(1)+'" fill="none" stroke="var(--rule)" stroke-width="1.3" stroke-dasharray="2 5"/>');
+      for (var k=0;k<sh[s];k++){
+        var a = k/sh[s]*Math.PI*2 - Math.PI/2;
+        out.push('<circle cx="'+(cx+rr*Math.cos(a)).toFixed(1)+'" cy="'+(cy+rr*Math.sin(a)).toFixed(1)+'" r="5" fill="var(--electron)"/>');
+      }
+    }
+    var tot = st.p+st.n, arr=[];
+    for (var i=0;i<tot;i++) arr.push(i < st.p ? 'var(--proton)' : 'var(--neutron)');
+    for (var i=arr.length-1;i>0;i--){ var j=(i*7919+13)%(i+1); var t=arr[i]; arr[i]=arr[j]; arr[j]=t; }
+    var nr = Math.min(27, 5+Math.sqrt(Math.max(tot,1))*3.5);
+    var dr = Math.max(2.7, 9.5-Math.sqrt(Math.max(tot,1))*0.78);
+    for (var i=0;i<tot;i++){
+      var ga = i*2.399963, rad = nr*Math.sqrt((i+0.5)/Math.max(tot,1));
+      out.push('<circle cx="'+(cx+rad*Math.cos(ga)).toFixed(1)+'" cy="'+(cy+rad*Math.sin(ga)).toFixed(1)+'" r="'+dr.toFixed(1)+'" fill="'+arr[i]+'"/>');
+    }
+    out.push('<text x="150" y="258" text-anchor="middle" font-family="PT Mono, monospace" font-size="11" fill="var(--ink-3)">'+
+             'цөм: '+st.p+' протон · '+st.n+' нейтрон  |  '+st.e+' электрон</text>');
+    root.querySelector('[data-t="svg"]').innerHTML = out.join('');
+  }
+  function render(){
+    root.querySelector('[data-v="p"]').textContent = st.p;
+    root.querySelector('[data-v="n"]').textContent = st.n;
+    root.querySelector('[data-v="e"]').textContent = st.e;
+    var A = st.p+st.n, q = st.p-st.e;
+    root.querySelector('[data-v="el"]').textContent = st.p === 0 ? '—' : (ELN[st.p] || 'Элемент '+st.p);
+    root.querySelector('[data-v="A"]').textContent = A;
+    root.querySelector('[data-v="q"]').textContent = q > 0 ? '+'+q : String(q);
+    root.querySelector('[data-v="not"]').innerHTML = nota(A, st.p, st.n, st.p === 0 ? '?' : (ELS[st.p]||'?'));
+    var s = root.querySelector('[data-v="stat"]');
+    if (st.p === 0){ s.className='status ion'; s.textContent = 'Протонгүй — энэ атом биш'; }
+    else if (q === 0){ s.className='status ok'; s.textContent = 'Цахилгаан саармаг атом — нийлбэр цэнэг 0'; }
+    else { s.className='status ion'; s.textContent = 'Цэнэгтэй хэсэг (ион): '+(q>0?'+':'')+q; }
+    atom();
+  }
+  Array.prototype.forEach.call(root.querySelectorAll('.ctr button'), function(b){
+    b.addEventListener('click', function(){
+      st[b.dataset.k] = Math.max(0, Math.min(20, st[b.dataset.k] + parseInt(b.dataset.d,10)));
+      render();
+    });
+  });
+  Array.prototype.forEach.call(root.querySelectorAll('[data-set]'), function(b){
+    b.addEventListener('click', function(){
+      var v = b.dataset.set.split(',').map(Number);
+      st.p=v[0]; st.n=v[1]; st.e=v[2]; render();
+    });
+  });
+  render();
+}
+
+/* ─────────────────────────────────────────────────────────────
+   6. ДАСГАЛ ТОГЛООМ
+   ───────────────────────────────────────────────────────────── */
+function wQuiz(root){
+  root.classList.add('w');
+  root.innerHTML =
+   '<div class="w-head"><h3>Дасгал тоглоом</h3><span class="tag">Симуляц 6</span></div>'+
+   '<p class="w-hint">10 асуулт. Хариулах бүрд тайлбар шууд гарч ирнэ.</p>'+
+   '<div class="bar-track"><div class="bar-fill" data-t="bar" style="width:0%"></div></div>'+
+   '<div class="w-ctl"><span class="stat" data-t="prog">Асуулт 1 / 10</span>'+
+     '<span class="stat g-" data-t="score">Оноо 0</span></div>'+
+   '<p class="qtext" data-t="q"></p>'+
+   '<div class="opts" data-t="opts"></div>'+
+   '<div class="fb" data-t="fb" hidden></div>'+
+   '<div class="w-ctl"><button class="btn btn-go" data-t="next" hidden>Дараагийн асуулт</button>'+
+     '<button class="btn" data-t="again" hidden>Дахин эхлэх</button></div>';
+
+  function mk(q, opts, ans, exp){ return {q:q, opts:opts, ans:ans, exp:exp}; }
+  function numOpts(correct){
+    var set = [correct];
+    while (set.length < 4){
+      var c = correct + ri(-5, 5);
+      if (c >= 0 && set.indexOf(c) === -1) set.push(c);
+    }
+    return set;
+  }
+  function build(correct){
+    var o = shuffle(numOpts(correct)).map(String);
+    return {opts:o, ans:o.indexOf(String(correct))};
+  }
+  var GEN = [
+    function(){ var z = ri(3,20), a = z + ri(3,12);
+      var b = build(a-z);
+      return mk(ELN[z]+'-ийн атомд Z = '+z+', A = '+a+'. Нейтроны тоо хэд вэ?', b.opts, b.ans,
+                'N = A − Z = '+a+' − '+z+' = '+(a-z)); },
+    function(){ var z = ri(3,20); var b = build(z);
+      return mk('Цахилгаан саармаг атомд '+z+' протон байв. Электроны тоо хэд вэ?', b.opts, b.ans,
+                'Саармаг атомд электроны тоо протоны тоотой тэнцүү: '+z); },
+    function(){ var z = ri(3,20), n = ri(3,20); var b = build(z+n);
+      return mk('Атомд '+z+' протон, '+n+' нейтрон байв. Массын тоо A хэд вэ?', b.opts, b.ans,
+                'A = Z + N = '+z+' + '+n+' = '+(z+n)+'. Электроны массыг тооцдоггүй.'); },
+    function(){ var z = ri(3,20);
+      var o = shuffle([ELN[z], ELN[Math.max(1,z-1)], ELN[Math.min(20,z+1)], ELN[Math.max(1,z-2)]].filter(function(v,i,a){return a.indexOf(v)===i;}));
+      while (o.length < 4){ var r = ELN[ri(1,20)]; if (o.indexOf(r) === -1) o.push(r); }
+      return mk(z+' протонтой элемент аль нь вэ?', o, o.indexOf(ELN[z]),
+                'Протоны тоо нь элементийн үелэх хүснэгт дэх дэс дугаар. '+z+' → '+ELN[z]+' ('+ELS[z]+')'); },
+    function(){ return mk('Нейтрон хаана байрладаг вэ?',
+      ['Цөмд','Цөмийг тойрон тойрог замд','Атомын гадна талд','Хаана ч байхгүй'], 0,
+      'Протон ба нейтрон цөмд, электрон цөмийг тойрон байрладаг.'); },
+    function(){ return mk('Аль эгэл хэсгийн массыг атомын масс тооцоход орхидог вэ?',
+      ['Электроны','Протоны','Нейтроны','Аль нь ч биш'], 0,
+      'Электроны масс протоныхоос ойролцоогоор 1840 дахин бага тул мэдэгдэхүйц нөлөө үзүүлэхгүй.'); },
+    function(){ return mk('Протоны харьцангуй цэнэг хэд вэ?', ['+1','−1','0','+2'], 0,
+      'Протон +1, электрон −1, нейтрон 0. Харьцангуй цэнэг нэгжгүй.'); },
+    function(){ var z = ri(5,20), e = z - 1; var b = build(z-e);
+      return mk(z+' протон, '+e+' электронтой хэсгийн нийлбэр цэнэг хэд вэ?',
+        ['+1','0','−1','+2'], 0, 'Цэнэг = протон − электрон = '+z+' − '+e+' = +1. Энэ нь атом биш, ион.'); },
+    function(){ return mk('Резерфордын туршилтад альфа туяаны маш цөөн хэсэг буцаж ойсон нь юуг харуулав?',
+      ['Атомын төвд бага эзлэхүүнтэй, нягт, эерэг цэнэгтэй цөм байгааг',
+       'Атом бүхэлдээ эерэг цэнэгтэй болохыг',
+       'Электрон цөмд байдгийг',
+       'Алт бусад металлаас хатуу болохыг'], 0,
+      'Ижил цэнэгүүд түлхэлцдэг. Хүчтэй түлхэлт үүсэхийн тулд эерэг цэнэг нэг цэгт төвлөрсөн байх ёстой — энэ нь цөм.'); },
+    function(){ return mk('Альфа туяаны ИХЭНХ хэсэг ялтсыг шулуун нэвтэрсэн нь юуг харуулав?',
+      ['Атом голдуу хоосон зайнаас тогтдгийг','Алт нимгэн болохыг',
+       'Альфа туяа маш хурдан болохыг','Атомд электрон байдаггүйг'], 0,
+      'Хэрэв атом цул байсан бол туяа нэвтэрч чадахгүй байв.'); }
+  ];
+
+  var qs = [], i = 0, score = 0;
+  var qEl = root.querySelector('[data-t="q"]'), oEl = root.querySelector('[data-t="opts"]'),
+      fb = root.querySelector('[data-t="fb"]'), nx = root.querySelector('[data-t="next"]'),
+      ag = root.querySelector('[data-t="again"]'), bar = root.querySelector('[data-t="bar"]'),
+      pr = root.querySelector('[data-t="prog"]'), sc = root.querySelector('[data-t="score"]');
+
+  function show(){
+    if (i >= qs.length){
+      qEl.textContent = 'Дууслаа! Оноо: ' + score + ' / 10';
+      oEl.innerHTML = '';
+      fb.hidden = false;
+      fb.className = 'fb ' + (score >= 8 ? 'good' : 'bad');
+      fb.textContent = score >= 8 ? 'Маш сайн! Сэдвээ сайн эзэмшжээ.'
+        : score >= 6 ? 'Болж байна. Алдсан асуултуудаа дахин үзээрэй.'
+        : 'Дээрх симуляцуудыг дахин ажиглаад, дахин оролдоорой.';
+      nx.hidden = true; ag.hidden = false;
+      bar.style.width = '100%'; return;
+    }
+    var q = qs[i];
+    qEl.textContent = q.q;
+    oEl.innerHTML = '';
+    q.opts.forEach(function(t, k){
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'opt'; b.textContent = t;
+      b.addEventListener('click', function(){ answer(k); });
+      oEl.appendChild(b);
+    });
+    fb.hidden = true; nx.hidden = true;
+    pr.textContent = 'Асуулт ' + (i+1) + ' / 10';
+    bar.style.width = Math.round(i/10*100) + '%';
+  }
+  function answer(k){
+    var q = qs[i], btns = oEl.querySelectorAll('.opt');
+    Array.prototype.forEach.call(btns, function(b, j){
+      b.disabled = true;
+      if (j === q.ans) b.classList.add('good');
+      else if (j === k) b.classList.add('bad');
+    });
+    var good = (k === q.ans);
+    if (good) score++;
+    sc.textContent = 'Оноо ' + score;
+    fb.hidden = false;
+    fb.className = 'fb ' + (good ? 'good' : 'bad');
+    fb.textContent = (good ? 'Зөв! ' : 'Буруу. ') + q.exp;
+    nx.hidden = false; nx.focus();
+  }
+  nx.addEventListener('click', function(){ i++; show(); });
+  function start(){
+    qs = shuffle(GEN.slice()).map(function(g){ return g(); });
+    i = 0; score = 0; sc.textContent = 'Оноо 0'; ag.hidden = true; show();
+  }
+  ag.addEventListener('click', start);
+  start();
+}
+
+/* ─────────────────────────────────────────────────────────────
+   7. QR КОД ҮҮСГЭГЧ (багшийн слайдад)
+   ───────────────────────────────────────────────────────────── */
+function wQr(root){
+  root.classList.add('w');
+  root.innerHTML =
+   '<div class="w-head"><h3>Сурагчийн хуудасны QR код</h3></div>'+
+   '<p class="w-hint">Интернэтэд байршуулсан хаягаа доор буулгаж тавиад товчоо дарвал QR код гарч ирнэ. Сурагчид утсаараа уншина.</p>'+
+   '<div class="w-ctl"><input type="url" data-t="url" id="qr-url" placeholder="https://miniisait.netlify.app" '+
+     'style="flex:1;min-width:200px;padding:10px 12px;border:1.5px solid var(--rule);border-radius:8px;'+
+     'font:inherit;font-size:15px;background:var(--paper);color:var(--ink)">'+
+     '<button class="btn btn-go" data-t="go">QR үүсгэх</button></div>'+
+   '<div data-t="out" style="display:grid;place-items:center;padding:10px"></div>'+
+   '<p class="w-hint" data-t="fall" hidden></p>';
+
+  var inp = root.querySelector('[data-t="url"]'), out = root.querySelector('[data-t="out"]'),
+      fall = root.querySelector('[data-t="fall"]');
+  root.querySelector('[data-t="go"]').addEventListener('click', function(){
+    var u = inp.value.trim();
+    out.innerHTML = ''; fall.hidden = true;
+    if (!u){ fall.hidden = false; fall.textContent = 'Эхлээд хаягаа оруулна уу.'; return; }
+    if (window.QRCode){
+      var box = document.createElement('div');
+      box.style.cssText = 'background:#fff;padding:14px;border-radius:10px;border:1.5px solid var(--rule)';
+      out.appendChild(box);
+      try {
+        new window.QRCode(box, {text:u, width:230, height:230,
+          colorDark:'#16202E', colorLight:'#ffffff'});
+      } catch(e){ fall.hidden = false; }
+      var cap = document.createElement('p');
+      cap.className = 'w-hint';
+      cap.style.cssText = 'margin-top:8px;font-family:var(--f-mono);font-size:13px;word-break:break-all;text-align:center';
+      cap.textContent = u; out.appendChild(cap);
+    } else {
+      fall.hidden = false;
+      fall.innerHTML = 'QR номын сан ачаалагдсангүй (интернэт холболтоо шалгана уу). '+
+        'Оронд нь хаягаа самбарт бичээд өгнө үү: <b style="word-break:break-all">' +
+        u.replace(/</g,'&lt;') + '</b>';
+    }
+  });
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Bootstrap
+   ───────────────────────────────────────────────────────────── */
+var REG = { scatter:wScatter, place:wPlace, mass:wMass, zoom:wZoom, builder:wBuilder, quiz:wQuiz, qr:wQr };
+function boot(){
+  Array.prototype.forEach.call(document.querySelectorAll('[data-w]'), function(el){
+    var f = REG[el.dataset.w];
+    if (f && !el.dataset.ready){ el.dataset.ready = '1'; try { f(el); } catch(e){ console.error(el.dataset.w, e); } }
+  });
+}
+window.AtomWidgets = { boot: boot };
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+else boot();
+})();
+
+</script>
+<script>
+(function(){
+  "use strict";
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var dots = document.getElementById('dots'), count = document.getElementById('count'), cur = 0;
+  slides.forEach(function(s,i){
+    var b = document.createElement('button');
+    b.className = 'dot'; b.type = 'button'; b.textContent = String(i+1);
+    b.title = s.dataset.t || ('Слайд ' + (i+1));
+    b.setAttribute('role','tab');
+    b.addEventListener('click', function(){ go(i); });
+    dots.appendChild(b);
+  });
+  function go(i){
+    cur = Math.max(0, Math.min(slides.length-1, i));
+    slides.forEach(function(s,k){ s.hidden = (k !== cur); });
+    Array.prototype.forEach.call(dots.children, function(d,k){ d.setAttribute('aria-current', k === cur ? 'true':'false'); });
+    count.textContent = (cur+1) + ' / ' + slides.length;
+    document.getElementById('prev').disabled = cur === 0;
+    document.getElementById('next').disabled = cur === slides.length-1;
+    slides[cur].scrollTop = 0;
+    window.dispatchEvent(new Event('resize'));
+  }
+  document.getElementById('prev').addEventListener('click', function(){ go(cur-1); });
+  document.getElementById('next').addEventListener('click', function(){ go(cur+1); });
+  document.getElementById('full').addEventListener('click', function(){
+    try {
+      if (document.fullscreenElement) document.exitFullscreen();
+      else document.documentElement.requestFullscreen();
+    } catch(e){}
+  });
+  document.addEventListener('keydown', function(e){
+    var t = (e.target && e.target.tagName) || '';
+    if (t === 'INPUT' || t === 'TEXTAREA') return;
+    if (e.key === 'ArrowRight' || e.key === 'PageDown'){ go(cur+1); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp'){ go(cur-1); e.preventDefault(); }
+    else if (e.key === 'Home'){ go(0); e.preventDefault(); }
+    else if (e.key === 'End'){ go(slides.length-1); e.preventDefault(); }
+    else if (e.key === 'f' || e.key === 'F'){ document.getElementById('full').click(); }
+  });
+  go(0);
+})();
+</script>
+</body>
+</html>
